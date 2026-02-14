@@ -22,6 +22,7 @@ import {
   AdvancedSection,
 } from '@/components/admin/content-sections'
 import { Save, X } from 'lucide-react'
+import { revalidateApp } from '../actions'
 
 
 const slideSchema = z.object({
@@ -35,35 +36,35 @@ const slideSchema = z.object({
 });
 
 const topProductsSchema = z.object({
-    isEnabled: z.boolean(),
-    title: z.string().min(1, 'Title is required.'),
-    productIds: z.array(z.string()).optional(),
+  isEnabled: z.boolean(),
+  title: z.string().min(1, 'Title is required.'),
+  productIds: z.array(z.string()).optional(),
 });
 
 const featuredCategoriesSchema = z.object({
-    isEnabled: z.boolean(),
-    title: z.string().min(1, 'Title is required.'),
-    categoryIds: z.array(z.string()).optional(),
+  isEnabled: z.boolean(),
+  title: z.string().min(1, 'Title is required.'),
+  categoryIds: z.array(z.string()).optional(),
 });
 
 const productPageOptionsSchema = z.object({
-    showQuickContact: z.boolean(),
-    whatsappInquiryMessage: z.string().optional().or(z.literal('')),
+  showQuickContact: z.boolean(),
+  whatsappInquiryMessage: z.string().optional().or(z.literal('')),
 });
 
 const contentSchema = z.object({
   logoUrl: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
   colorTheme: z.enum(['green-honey', 'indigo-gold', 'earth-olive', 'charcoal-green', 'sun-green']).optional(),
-  
+
   heroMode: z.enum(['single', 'carousel']).default('single'),
-  
+
   // Single hero fields
   heroTitle: z.string().optional().or(z.literal('')),
   heroSubtitle: z.string().optional().or(z.literal('')),
   heroImageUrl: z.string().url('Must be a valid URL.').optional().or(z.literal('')),
   heroCtaText: z.string().optional().or(z.literal('')),
   heroCtaLink: z.string().optional().or(z.literal('')),
-  
+
   // Carousel hero fields
   heroCarouselSlides: z.array(slideSchema).optional(),
 
@@ -148,10 +149,10 @@ export default function AdminContentPage() {
 
   const handleAccordionChange = (value: string) => {
     setActiveAccordion(value);
-    if(value) {
-        localStorage.setItem('contentAdminAccordion', value);
+    if (value) {
+      localStorage.setItem('contentAdminAccordion', value);
     } else {
-        localStorage.removeItem('contentAdminAccordion');
+      localStorage.removeItem('contentAdminAccordion');
     }
   };
 
@@ -180,37 +181,41 @@ export default function AdminContentPage() {
 
   async function onSubmit(values: z.infer<typeof contentSchema>) {
     if (!firestore) {
-        toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not available.' });
-        return;
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not available.' });
+      return;
     }
     try {
-        await setDoc(doc(firestore, 'content', 'static'), values, { merge: true });
-        toast({
-            title: 'Content Updated',
-            description: 'Site content has been saved successfully.',
-        });
-        router.refresh();
+      await setDoc(doc(firestore, 'content', 'static'), values, { merge: true });
+
+      // Fix: Clear Next.js cache to ensure theme changes reflect immediately
+      await revalidateApp();
+
+      toast({
+        title: 'Content Updated',
+        description: 'Site content has been saved successfully.',
+      });
+      router.refresh();
     } catch (e: any) {
-        toast({
-            variant: 'destructive',
-            title: 'Update Failed',
-            description: e.message || 'An unknown error occurred.',
-        });
+      toast({
+        variant: 'destructive',
+        title: 'Update Failed',
+        description: e.message || 'An unknown error occurred.',
+      });
     }
   }
 
   if (loading) {
-      return (
-          <div className="space-y-4">
-              <Skeleton className="h-10 w-1/3" />
-              <div className="space-y-4">
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
-              </div>
-          </div>
-      )
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-1/3" />
+        <div className="space-y-4">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+      </div>
+    )
   }
 
   const { formState: { isSubmitting, isDirty } } = form;
@@ -220,38 +225,38 @@ export default function AdminContentPage() {
       <h1 className="text-3xl font-bold">Site Content</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <Accordion
-                type="single"
-                collapsible
-                value={activeAccordion}
-                onValueChange={handleAccordionChange}
-            >
-                <BrandingAppearanceSection form={form} />
-                <HomepageContentSection form={form} />
-                <ProductCatalogSection form={form} />
-                <CommunicationNoticesSection form={form} />
-                <AboutContactSection form={form} />
-                <AdvancedSection form={form} />
-            </Accordion>
-          
+          <Accordion
+            type="single"
+            collapsible
+            value={activeAccordion}
+            onValueChange={handleAccordionChange}
+          >
+            <BrandingAppearanceSection form={form} />
+            <HomepageContentSection form={form} />
+            <ProductCatalogSection form={form} />
+            <CommunicationNoticesSection form={form} />
+            <AboutContactSection form={form} />
+            <AdvancedSection form={form} />
+          </Accordion>
+
           {isDirty && (
-             <div className="fixed bottom-20 md:bottom-6 right-6 z-[51] flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="lg"
-                  onClick={() => form.reset()}
-                  disabled={isSubmitting}
-                  className="bg-background shadow-lg"
-                >
-                  <X className="mr-2 h-4 w-4" />
-                  Cancel
-                </Button>
-                <Button type="submit" size="lg" disabled={isSubmitting} className="shadow-lg">
-                  <Save className="mr-2 h-4 w-4" />
-                  {isSubmitting ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
+            <div className="fixed bottom-20 md:bottom-6 right-6 z-[51] flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                onClick={() => form.reset()}
+                disabled={isSubmitting}
+                className="bg-background shadow-lg"
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel
+              </Button>
+              <Button type="submit" size="lg" disabled={isSubmitting} className="shadow-lg">
+                <Save className="mr-2 h-4 w-4" />
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
           )}
         </form>
       </Form>
