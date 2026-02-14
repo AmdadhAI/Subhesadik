@@ -2,6 +2,9 @@
 # https://firebase.google.com/docs/app-hosting/configure
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  # Phase Three: Allow scaling to prevent downtime during deployments
+  minInstances: 0  # Scale to zero when idle (cost-optimized)
+  maxInstances: 5  # Allow scaling under load
+  cpu: 1
+  memoryMiB: 512
+  concurrency: 80  # Requests per instance

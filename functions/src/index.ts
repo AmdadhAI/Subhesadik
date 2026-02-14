@@ -5,77 +5,112 @@ import * as nodemailer from "nodemailer";
 admin.initializeApp();
 
 export const onNewOrder = functions.firestore
-  .document("orders/{orderId}")
-  .onCreate(async (snap, context) => {
-    // Moved environment variables and transporter inside the function
-    // to ensure they are fresh for each invocation and to add checks.
-    const gmailEmail = process.env.GMAIL_EMAIL;
-    const gmailPassword = process.env.GMAIL_PASSWORD;
+    .document("orders/{orderId}")
+    .onCreate(
+        async (
+            snap: functions.firestore.QueryDocumentSnapshot,
+            context: functions.EventContext
+        ) => {
 
-    // Check if the environment variables are set.
-    if (!gmailEmail || !gmailPassword) {
-      functions.logger.error(
-        "CRITICAL: Gmail credentials (GMAIL_EMAIL or GMAIL_PASSWORD) are not set in the function's environment variables. Email will not be sent."
-      );
-      return null;
-    }
+            // Environment variables
+            const gmailEmail = process.env.GMAIL_EMAIL;
+            const gmailPassword = process.env.GMAIL_PASSWORD;
 
-    // Create transporter inside the function.
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: gmailEmail,
-        pass: gmailPassword,
-      },
-    });
+            // Safety check (Phase One compliant)
+            if (!gmailEmail || !gmailPassword) {
+                functions.logger.error(
+                    "CRITICAL: Gmail credentials (GMAIL_EMAIL or GMAIL_PASSWORD) are not set. Email will not be sent."
+                );
+                return null;
+            }
 
-    const order = snap.data();
-    const orderId = context.params.orderId;
+            // Transporter (unchanged logic)
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: gmailEmail,
+                    pass: gmailPassword,
+                },
+            });
 
-    // Defensive check for malformed data to prevent function crashes.
-    if (
-        !order ||
-        !order.products ||
-        !Array.isArray(order.products) ||
-        order.products.length === 0 ||
-        !order.fullName ||
-        typeof order.totalAmount !== "number" ||
-        typeof order.subtotal !== "number" ||
-        typeof order.deliveryCharge !== "number"
-    ) {
-        functions.logger.error(`Malformed order document received: ${orderId}. Aborting function.`);
-        return null;
-    }
+            const order = snap.data();
+            const orderId = context.params.orderId;
 
-    const orderDate = order.createdAt.toDate();
-    const formattedDate = orderDate.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
+            // Defensive check for malformed data to prevent function crashes.
+            if (
+                !order ||
+                !order.products ||
+                !Array.isArray(order.products) ||
+                order.products.length === 0 ||
+                !order.fullName ||
+                typeof order.totalAmount !== "number" ||
+                typeof order.subtotal !== "number" ||
+                typeof order.deliveryCharge !== "number"
+            ) {
+                functions.logger.error(`Malformed order document received: ${orderId}. Aborting function.`);
+                return null;
+            }
 
-    const productsHtml = order.products
-      .map(
-        (p: { name: string; quantity: number; price: number; size?: string }) =>
-          `<tr>
+            // Phase Two Fix: Rate limiting check to prevent email spam and cost abuse
+            // CRITICAL: Must use Firestore Timestamp, NOT JavaScript Date for comparison
+            const fiveMinutesAgo = admin.firestore.Timestamp.fromMillis(Date.now() - 5 * 60 * 1000);
+            try {
+                const recentOrders = await admin.firestore()
+                    .collection('orders')
+                    .where('mobilePhoneNumber', '==', order.mobilePhoneNumber)
+                    .where('createdAt', '>', fiveMinutesAgo)
+                    .get();
+
+                // Log for debugging (includes current order in count)
+                functions.logger.info(`Rate limit check for ${order.mobilePhoneNumber}: ${recentOrders.size} orders in last 5 minutes`);
+
+                // Current order is INCLUDED in query results (it's already written)
+                // So check >= 4 (current + 3 previous = rate limit)
+                if (recentOrders.size >= 4) {
+                    // Rate limit hit: mark as suspicious, skip email, but allow order to exist
+                    functions.logger.warn(`🚨 RATE LIMIT HIT for phone ${order.mobilePhoneNumber}. Order count: ${recentOrders.size} in 5 minutes.`);
+                    await snap.ref.update({
+                        suspicious: true,
+                        emailSent: false,
+                        rateLimitedAt: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                    return null;
+                }
+            } catch (error) {
+                // Don't block order processing if rate limit check fails - log and continue
+                functions.logger.error(`Rate limit check failed for ${orderId}:`, error);
+            }
+
+            const orderDate = order.createdAt.toDate();
+            const formattedDate = orderDate.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+
+            const productsHtml = order.products
+                .map(
+                    (p: { name: string; quantity: number; price: number; size?: string }) =>
+                        `<tr>
             <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1F2933; font-size: 14px;">${p.name}${p.size ? ` (${p.size})` : ""}</td>
             <td align="center" style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1F2933; font-size: 14px;">${p.quantity}</td>
             <td align="right" style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1F2933; font-size: 14px;">৳${p.price.toFixed(2)}</td>
             <td align="right" style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1F2933; font-size: 14px;">৳${(p.quantity * p.price).toFixed(2)}</td>
           </tr>`
-      )
-      .join("");
-    
-    let whatsappNumber = order.mobilePhoneNumber.replace(/[^0-9]/g, "");
-    if (whatsappNumber.startsWith('01')) {
-      whatsappNumber = '880' + whatsappNumber.substring(1);
-    }
-    const adminOrderUrl = `https://subhesadik-408f5.web.app/admin/orders/${orderId}`;
+                )
+                .join("");
+
+            let whatsappNumber = order.mobilePhoneNumber.replace(/[^0-9]/g, "");
+            if (whatsappNumber.startsWith('01')) {
+                whatsappNumber = '880' + whatsappNumber.substring(1);
+            }
+            const baseUrl = process.env.APP_BASE_URL || 'https://subhesadik-408f5.web.app';
+            const adminOrderUrl = `${baseUrl}/admin/orders/${orderId}`;
 
 
-    const emailHtml = `
+            const emailHtml = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -200,17 +235,32 @@ export const onNewOrder = functions.firestore
     `;
 
 
-    try {
-        await transporter.sendMail({
-            from: `"Subhe Sadik" <${gmailEmail}>`,
-            to: "try.amdad@gmail.com",
-            subject: `New Order #${orderId}`,
-            html: emailHtml,
+            try {
+                const adminEmail = process.env.ADMIN_EMAIL || "try.amdad@gmail.com";
+                await transporter.sendMail({
+                    from: `"Subhe Sadik" <${gmailEmail}>`,
+                    to: adminEmail,
+                    subject: `New Order #${orderId}`,
+                    html: emailHtml,
+                });
+                functions.logger.info(`Email sent for order ${orderId}`);
+
+                // Phase Three: Track email success for observability
+                await snap.ref.update({
+                    emailSent: true,
+                    emailSentAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+
+            } catch (error) {
+                functions.logger.error(`CRITICAL: Email failed for order ${orderId}`, error);
+
+                // Phase Three: Track email failure for manual review/retry
+                await snap.ref.update({
+                    emailSent: false,
+                    emailError: (error as Error).message,
+                    emailFailedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
+
+            return null;
         });
-        functions.logger.info(`Email sent for order ${orderId}`);
-    } catch (error) {
-        functions.logger.error(`Error sending email for ${orderId}`, error);
-    }
-    
-    return null;
-  });
