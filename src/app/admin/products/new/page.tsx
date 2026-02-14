@@ -1,0 +1,39 @@
+import { ProductForm } from "@/components/admin/product-form";
+import { getCategories } from "@/lib/firebase-data";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+
+export default async function NewProductPage() {
+    const categoriesData = await getCategories();
+    // Only pass serializable data to the client component
+    const categories = categoriesData.map(c => ({
+        id: c.id,
+        name: c.name,
+        slug: c.slug
+    }));
+
+    return (
+        <div className="space-y-4">
+             <Breadcrumb>
+                <BreadcrumbList>
+                <BreadcrumbItem>
+                    <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                    <BreadcrumbPage>New Product</BreadcrumbPage>
+                </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Create New Product</CardTitle>
+                    <CardDescription>Fill out the form below to add a new product to your store.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ProductForm categories={categories} />
+                </CardContent>
+            </Card>
+        </div>
+    )
+}

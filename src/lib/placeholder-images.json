@@ -1,0 +1,88 @@
+{
+  "placeholderImages": [
+    {
+      "id": "product-honey",
+      "description": "Raw Natural Honey from Sundarbans.",
+      "imageUrl": "https://images.unsplash.com/photo-1626132660920-374ad3f518fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyYXclMjBob25leXxlbnwwfHx8fDE3NzA2ODQ5MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "raw honey"
+    },
+    {
+      "id": "product-black-seed",
+      "description": "Organic Black Seed (Kalojira).",
+      "imageUrl": "https://images.unsplash.com/photo-1754898786465-26ffe038d26f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMHNlZWR8ZW58MHx8fHwxNzcwNzU1MDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black seed"
+    },
+    {
+      "id": "product-cashew",
+      "description": "Fresh and crunchy organic cashew nuts.",
+      "imageUrl": "https://images.unsplash.com/photo-1686721635283-70e6344183e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjYXNoZXclMjBudXRzfGVufDB8fHx8MTc3MDc1NTA1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cashew nuts"
+    },
+    {
+      "id": "product-almond",
+      "description": "Imported quality organic almonds.",
+      "imageUrl": "https://images.unsplash.com/photo-1600188999986-331bec5f9a8d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhbG1vbmRzfGVufDB8fHx8MTc3MDY0NTMxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "almonds"
+    },
+    {
+      "id": "product-punjabi-white",
+      "description": "Men's cotton punjabi in classic white.",
+      "imageUrl": "https://images.unsplash.com/photo-1621856139454-03ff9806204c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aGl0ZSUyMHB1bmphYml8ZW58MHx8fHwxNzcwNzU1MDU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white punjabi"
+    },
+    {
+      "id": "product-punjabi-maroon",
+      "description": "Men's semi-silk punjabi in maroon.",
+      "imageUrl": "https://picsum.photos/seed/product-punjabi-maroon/600/600",
+      "imageHint": "maroon punjabi"
+    },
+    {
+      "id": "product-punjabi-navy",
+      "description": "Printed punjabi in navy blue.",
+      "imageUrl": "https://images.unsplash.com/photo-1605535839586-68f3358463a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibHVlJTIwcHVuamFiaXxlbnwwfHx8fDE3NzA3NTUwNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blue punjabi"
+    },
+    {
+      "id": "product-attar-oud",
+      "description": "Premium alcohol-free Oud attar.",
+      "imageUrl": "https://images.unsplash.com/photo-1669444699729-f55f7cf9f82b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvdWQlMjBhdHRhcnxlbnwwfHx8fDE3NzA3NTUwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oud attar"
+    },
+    {
+      "id": "product-attar-rose",
+      "description": "Natural rose extract attar.",
+      "imageUrl": "https://picsum.photos/seed/product-attar-rose/600/600",
+      "imageHint": "rose attar"
+    },
+    {
+      "id": "product-perfume-arabic",
+      "description": "Men's perfume with an Arabic blend.",
+      "imageUrl": "https://images.unsplash.com/photo-1705936119725-f893c63ce939?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcmFiaWMlMjBwZXJmdW1lfGVufDB8fHx8MTc3MDc1NTA1NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "arabic perfume"
+    },
+    {
+      "id": "product-burkha-black",
+      "description": "Simple black burkha with a comfortable fit.",
+      "imageUrl": "https://images.unsplash.com/photo-1627811269913-c0d964da1eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxibGFjayUyMGJ1cmtoYXxlbnwwfHx8fDE3NzA3NTUwNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black burkha"
+    },
+    {
+      "id": "product-burkha-embroidered",
+      "description": "Embroidered burkha for occasion wear.",
+      "imageUrl": "https://images.unsplash.com/photo-1657470036063-c7e49da31393?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlbWJyb2lkZXJlZCUyMGJ1cmtoYXxlbnwwfHx8fDE3NzA3NTUwNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "embroidered burkha"
+    },
+    {
+      "id": "product-wall-clock",
+      "description": "Islamic wall clock.",
+      "imageUrl": "https://images.unsplash.com/photo-1633505190652-33f1b81d8a05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxpc2xhbWljJTIwY2xvY2t8ZW58MHx8fHwxNzcwNzU1MDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "islamic clock"
+    },
+    {
+      "id": "product-tasbih",
+      "description": "Wooden tasbih with 100 beads.",
+      "imageUrl": "https://images.unsplash.com/photo-1612799403932-29fdf8686a56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwcmF5ZXIlMjBiZWFkc3xlbnwwfHx8fDE3NzA3NTUwNTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "prayer beads"
+    }
+  ]
+}

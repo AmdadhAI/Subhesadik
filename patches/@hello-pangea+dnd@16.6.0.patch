@@ -1,0 +1,15 @@
+diff --git a/node_modules/@hello-pangea/dnd/package.json b/node_modules/@hello-pangea/dnd/package.json
+index 5898863..4758529 10064
+--- a/node_modules/@hello-pangea/dnd/package.json
++++ b/node_modules/@hello-pangea/dnd/package.json
+@@ -83,8 +83,8 @@
+     "url": "https://github.com/hello-pangea/dnd/issues"
+   },
+   "peerDependencies": {
+-    "react": "^16.8.5 || ^17.0.0 || ^18.0.0",
+-    "react-dom": "^16.8.5 || ^17.0.0 || ^18.0.0"
++    "react": "^16.8.5 || ^17.0.0 || ^18.0.0 || ^19.0.0",
++    "react-dom": "^16.8.5 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+   },
+   "repository": {
+     "type": "git",

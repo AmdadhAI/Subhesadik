@@ -1,0 +1,457 @@
+{
+  "entities": {
+    "Collection": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Collection",
+      "type": "object",
+      "description": "Represents a collection of products, grouping them based on certain criteria.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the collection entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the collection."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the collection."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the collection is currently enabled and visible to users."
+        },
+        "order": {
+          "type": "number",
+          "description": "The order in which the collection is displayed."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "isActive",
+        "order"
+      ]
+    },
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
+      "type": "object",
+      "description": "Represents a category of products.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the category."
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly identifier for the category."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the category is currently enabled and visible to users."
+        },
+        "order": {
+          "type": "number",
+          "description": "The order in which the category is displayed."
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the category was created."
+        },
+        "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL for the category's representative image."
+        }
+      },
+      "required": [
+        "name",
+        "slug",
+        "isActive",
+        "order",
+        "createdAt"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product available for purchase.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly identifier for the product."
+        },
+        "categorySlug": {
+          "type": "string",
+          "description": "The slug of the category this product belongs to."
+        },
+        "images": {
+          "type": "array",
+          "description": "Array of URLs to product images.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "videoUrl": {
+          "type": "string",
+          "description": "Optional URL to a product video, e.g., from YouTube."
+        },
+        "features": {
+          "type": "array",
+          "description": "Array of key features of the product.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product."
+        },
+        "hasVariants": {
+          "type": "boolean",
+          "description": "If true, the product uses the variants array. If false, it uses the single price fields."
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the product if it's a simple product (hasVariants is false)."
+        },
+        "oldPrice": {
+          "type": "number",
+          "description": "Optional old price for showing a discount on a simple product."
+        },
+        "inStock": {
+          "type": "boolean",
+          "description": "Stock status if it's a simple product (hasVariants is false)."
+        },
+        "variantType": {
+          "type": "string",
+          "enum": ["weight", "volume", "size", "custom"],
+          "description": "The type of variants (e.g., weight, size) if the product has variants."
+        },
+        "variants": {
+          "type": "array",
+          "description": "Array of product variants (e.g., sizes, weights). Used when hasVariants is true.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Name of the variant (e.g., '500g', 'Large')." },
+              "price": { "type": "number", "description": "Price of this variant." },
+              "oldPrice": { "type": "number", "description": "Optional old price for showing a discount." },
+              "inStock": { "type": "boolean", "description": "Stock status of this variant." }
+            },
+            "required": ["name", "price", "inStock"]
+          }
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates whether the product is visible to users."
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the product was created."
+        }
+      },
+      "required": [
+        "name",
+        "slug",
+        "categorySlug",
+        "images",
+        "features",
+        "description",
+        "hasVariants",
+        "isActive",
+        "createdAt"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the order entity."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the customer placing the order."
+        },
+        "mobilePhoneNumber": {
+          "type": "string",
+          "description": "Mobile phone number of the customer."
+        },
+        "address": {
+          "type": "string",
+          "description": "Full delivery address of the customer."
+        },
+        "shippingZone": {
+          "type": "string",
+          "description": "The selected shipping zone for the order.",
+          "enum": ["Inside Dhaka", "Outside Dhaka"]
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the customer (optional).",
+          "format": "email"
+        },
+        "orderNotes": {
+          "type": "string",
+          "description": "Order notes or comments from the customer (optional)."
+        },
+        "products": {
+          "type": "array",
+          "description": "Array of products included in the order.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" },
+              "size": { "type": "string" }
+            },
+            "required": ["productId", "name", "quantity", "price"]
+          }
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Subtotal amount of the order before shipping."
+        },
+        "deliveryCharge": {
+          "type": "number",
+          "description": "Shipping/delivery charge for the order."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total amount of the order (subtotal + delivery)."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used for the order (e.g., COD)."
+        },
+        "orderStatus": {
+          "type": "string",
+          "description": "Status of the order.",
+          "enum": ["Pending", "Confirmed", "Delivered", "Cancelled"]
+        },
+        "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the order was placed."
+        }
+      },
+      "required": [
+        "id",
+        "fullName",
+        "mobilePhoneNumber",
+        "address",
+        "shippingZone",
+        "products",
+        "subtotal",
+        "deliveryCharge",
+        "totalAmount",
+        "paymentMethod",
+        "orderStatus",
+        "createdAt"
+      ]
+    },
+    "AdminRole": {
+      "title": "Admin Role",
+      "description": "A document whose existence at /role_admin/{uid} grants admin privileges to the user with that UID.",
+      "type": "object",
+      "properties": {
+        "isAdmin": {
+          "type": "boolean",
+          "description": "Confirms the user is an admin. Should always be true."
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when admin rights were granted."
+        }
+      },
+      "required": ["isAdmin", "grantedAt"]
+    },
+    "Content": {
+      "title": "Site Content",
+      "description": "A single document holding editable site-wide content like About Us, contact info, etc.",
+      "type": "object",
+      "properties": {
+        "colorTheme": {
+          "type": "string",
+          "enum": ["green-honey", "indigo-gold", "earth-olive", "charcoal-green"],
+          "description": "The active color palette for the storefront."
+        },
+        "heroMode": {
+          "type": "string",
+          "enum": ["single", "carousel"],
+          "description": "Determines whether to show a single hero image or a carousel."
+        },
+        "heroTitle": {
+          "type": "string",
+          "description": "The main title for the single hero section."
+        },
+        "heroSubtitle": {
+          "type": "string",
+          "description": "The subtitle for the single hero section."
+        },
+        "heroImageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the hero image for the single hero section."
+        },
+        "heroCtaText": {
+          "type": "string",
+          "description": "The text for the call-to-action button in the single hero section."
+        },
+        "heroCtaLink": {
+          "type": "string",
+          "description": "The link for the call-to-action button in the single hero section."
+        },
+        "heroCarouselSlides": {
+          "type": "array",
+          "description": "An array of slides for the hero carousel.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "subtitle": { "type": "string" },
+              "imageUrl": { "type": "string", "format": "uri" },
+              "ctaText": { "type": "string" },
+              "ctaLink": { "type": "string" },
+              "isActive": { "type": "boolean" }
+            },
+            "required": ["id", "title", "subtitle", "imageUrl", "ctaText", "ctaLink", "isActive"]
+          }
+        },
+        "topProducts": {
+            "type": "object",
+            "description": "Configuration for the top products section on the homepage.",
+            "properties": {
+              "isEnabled": { "type": "boolean" },
+              "title": { "type": "string" },
+              "productIds": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+        },
+        "featuredCategories": {
+            "type": "object",
+            "description": "Configuration for the featured categories carousel on the homepage.",
+            "properties": {
+              "isEnabled": { "type": "boolean" },
+              "title": { "type": "string" },
+              "categoryIds": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+        },
+        "noticeBanner": {
+          "type": "string",
+          "description": "A site-wide notice banner displayed at the top of the page."
+        },
+        "logoUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the site logo."
+        },
+        "aboutUs": { "type": "string" },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "address": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "phone": { "type": "string" },
+            "messengerUsername": {
+              "type": "string",
+              "description": "Your Facebook Page username for Messenger link (e.g., 'subhesadik')."
+            },
+            "whatsappNumber": {
+              "type": "string",
+              "description": "Your WhatsApp number including country code (e.g., '+8801234567890')."
+            },
+            "productChatHelperText": {
+              "type": "string",
+              "description": "Helper text displayed above the chat buttons on the product page."
+            },
+            "whatsappIconUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL for a custom WhatsApp icon."
+            },
+            "messengerIconUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL for a custom Messenger icon."
+            }
+          },
+          "required": ["address", "email", "phone"]
+        },
+        "checkoutNotice": { "type": "string" },
+        "productPageOptions": {
+          "type": "object",
+          "description": "Settings for the product detail page.",
+          "properties": {
+            "showQuickContact": {
+              "type": "boolean",
+              "description": "If true, shows quick contact buttons (e.g. WhatsApp) on the product page."
+            },
+            "whatsappInquiryMessage": {
+              "type": "string",
+              "description": "Template for the pre-filled WhatsApp message. Use {{productName}} and {{productUrl}} placeholders."
+            }
+          }
+        }
+      },
+       "required": ["aboutUs", "contact", "checkoutNotice"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/backend/entities/Category" },
+      "description": "Stores product categories. Allows admin to manage categories (add, edit name, enable/disable)."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/backend/entities/Product" },
+      "description": "Stores products. Allows admin to add, edit details, upload images/video URL, set price/discount, toggle stock/visibility."
+    },
+    "/collections/{collectionId}": {
+      "schema": { "$ref": "#/backend/entities/Collection" },
+      "description": "Stores collections of products, grouping them based on certain criteria. Allows admin to manage collections."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/backend/entities/Order" },
+      "description": "Stores customer orders. Allows admin to view list, view details, update order status only."
+    },
+    "/role_admin/{uid}": {
+      "schema": { "$ref": "#/backend/entities/AdminRole" },
+      "description": "Indicates Admin privileges, by UID. Existence of document grants admin role."
+    },
+    "/content/static": {
+        "schema": { "$ref": "#/backend/entities/Content" },
+        "description": "Stores editable site-wide content. Publicly readable, admin-writable."
+    }
+  }
+}
+
+    

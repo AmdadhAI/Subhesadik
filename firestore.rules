@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/role_admin/$(request.auth.uid));
+    }
+
+    // Publicly readable collections
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Orders can be created by anyone with valid data, but only read/updated by admins.
+    match /orders/{orderId} {
+      // Hardened create rule with data validation
+      allow create: if request.resource.data.fullName is string &&
+                       request.resource.data.fullName.size() > 1 &&
+                       request.resource.data.mobilePhoneNumber is string &&
+                       request.resource.data.mobilePhoneNumber.size() > 5 &&
+                       request.resource.data.address is string &&
+                       request.resource.data.address.size() > 5 &&
+                       request.resource.data.shippingZone is string &&
+                       request.resource.data.shippingZone in ['Inside Dhaka', 'Outside Dhaka'] &&
+                       request.resource.data.subtotal is number &&
+                       request.resource.data.deliveryCharge is number &&
+                       request.resource.data.totalAmount is number &&
+                       request.resource.data.totalAmount > 0 &&
+                       request.resource.data.products is list &&
+                       request.resource.data.products.size() > 0;
+                       
+      allow read, update: if isAdmin();
+      allow delete: if false; // Disallow deleting orders
+    }
+
+    // Roles can only be managed by other admins.
+    match /role_admin/{uid} {
+      // Admins need to read their own role for the isAdmin() function to work
+      allow get: if request.auth.uid == uid || isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

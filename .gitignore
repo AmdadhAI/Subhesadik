@@ -1,0 +1,56 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+functions/node_modules/
+
+# =========================
+# Build Artifacts
+# =========================
+.next/
+out/
+build/
+functions/lib/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Logs
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# =========================
+# Firebase
+# =========================
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+database-debug.log*
+firebase-emulators.log
+firebase.emulators.log
+*.jar
+*.lock
+report*
+
+# =========================
+# Environment / Secrets (CRITICAL)
+# =========================
+.env
+.env.*
+.env*.local
+firebase-admin-key.json
+functions/.env
+
+# =========================
+# Editor / OS
+# =========================
+.vscode/
+.DS_Store
+Thumbs.db
