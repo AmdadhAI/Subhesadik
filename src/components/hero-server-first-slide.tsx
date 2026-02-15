@@ -44,7 +44,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent pointer-events-none" />
 
             {/* Text content with fixed height container to prevent CLS */}
-            <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4 pointer-events-none">
+            <div className="relative z-10 min-h-[60svh] md:min-h-[100svh] flex flex-col items-center justify-center text-center text-white px-4 pointer-events-none">
                 <div className="max-w-4xl space-y-4 md:space-y-6">
                     {/* Fixed height for title to prevent layout shift */}
                     <h1
