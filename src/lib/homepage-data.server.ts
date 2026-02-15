@@ -55,18 +55,18 @@ async function fetchHomepageData(): Promise<HomepageData> {
 }
 
 /**
- * Get all homepage data with on-demand cache revalidation
+ * Get all homepage data with hybrid cache strategy
  * 
  * Cache behavior:
- * - Cached forever until explicitly invalidated
- * - Invalidate via: revalidateTag('homepage')
- * - Zero Firestore reads after first load
- * - Updates immediately when admin saves content
+ * - Auto-refreshes every 5 minutes (prevents frozen/stale UI)
+ * - Admin updates: revalidateTag('homepage') for instant invalidation
+ * - Minimal Firestore reads (only once per 5 min window)
+ * - Balance between performance and data freshness
  * 
  * Usage in page.tsx:
  *   const data = await getHomepageData();
  * 
- * Invalidation in admin actions:
+ * Admin invalidation:
  *   revalidateTag('homepage');
  */
 export const getHomepageData = unstable_cache(
@@ -74,6 +74,6 @@ export const getHomepageData = unstable_cache(
     ['homepage-data'],
     {
         tags: ['homepage'],
-        revalidate: false, // No time-based revalidation - only on-demand
+        revalidate: 300, // 5 minutes - auto-refresh to prevent frozen UI
     }
 );
