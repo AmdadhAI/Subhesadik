@@ -19,7 +19,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
 
     return (
         <section
-            className="relative w-full min-h-[75svh] md:min-h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full min-h-[60svh] md:min-h-[100svh] overflow-hidden bg-muted"
         >
             {/* Priority image - loaded immediately with responsive sizes */}
             <Image
