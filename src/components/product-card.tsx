@@ -33,13 +33,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
       <Link href={`/products/${product.slug}`} className="block">
         <CardHeader className="p-0">
-          <div className="relative aspect-square w-full">
+          <div className="relative aspect-[4/5] w-full overflow-hidden">
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              sizes="(max-width: 768px) 50vw, 25vw"
               priority={priority}
               data-ai-hint="product image"
             />
@@ -47,18 +47,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               <Badge variant="secondary" className="absolute top-2 left-2">Out of Stock</Badge>
             )}
             {displayVariant.oldPrice && displayVariant.price < displayVariant.oldPrice && (
-                <Badge variant="default" className="absolute top-2 right-2 bg-accent text-accent-foreground">Sale</Badge>
+              <Badge variant="default" className="absolute top-2 right-2 bg-accent text-accent-foreground">Sale</Badge>
             )}
           </div>
         </CardHeader>
         <CardContent className="p-4 pb-0">
-          <CardTitle className="text-base font-semibold leading-tight h-10 line-clamp-2 hover:text-primary transition-colors">
-            {product.name}
-          </CardTitle>
+          <div className="h-12">
+            <CardTitle className="text-base font-semibold leading-tight line-clamp-2 hover:text-primary transition-colors">
+              {product.name}
+            </CardTitle>
+          </div>
         </CardContent>
       </Link>
-      <CardFooter className="p-4 mt-auto flex justify-between items-end">
-        <div>
+      <CardFooter className="p-4 mt-auto flex justify-between items-end h-16">
+        <div className="h-full flex flex-col justify-end">
           {displayVariant.oldPrice && (
             <p className="text-sm text-muted-foreground line-through">
               ৳{displayVariant.oldPrice.toFixed(2)}

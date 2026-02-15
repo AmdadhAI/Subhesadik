@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PT_Sans } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/layout/header';
@@ -11,6 +12,14 @@ import { CartDrawer } from '@/components/cart/cart-drawer';
 import { getContent } from '@/lib/firebase-data';
 import type { ColorTheme } from '@/lib/types';
 import { ThemeProvider } from '@/components/theme-provider';
+
+// Load fonts with next/font for Zero CLS
+const ptSans = PT_Sans({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-pt-sans'
+});
 
 export const metadata: Metadata = {
   title: 'Subhe Sadik eCommerce',
@@ -29,18 +38,14 @@ export default async function RootLayout({
   let heroImageUrl = '';
   if (content.heroMode === 'carousel' && content.heroCarouselSlides && content.heroCarouselSlides.length > 0) {
     const firstActiveSlide = content.heroCarouselSlides.find(s => s.isActive);
-    heroImageUrl = firstActiveSlide?.imageUrl || '';
+    heroImageUrl = firstActiveSlide?.imageUrls?.lg || firstActiveSlide?.imageUrl || '';
   } else {
-    heroImageUrl = content.heroImageUrl || '';
+    heroImageUrl = content.heroImageUrls?.lg || content.heroImageUrl || '';
   }
 
   return (
-    <html lang="en" className="light" data-theme={theme} suppressHydrationWarning>
+    <html lang="en" className={ptSans.variable} data-theme={theme} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
         {heroImageUrl && (
           <link
             rel="preload"
@@ -51,7 +56,7 @@ export default async function RootLayout({
           />
         )}
       </head>
-      <body className="font-body antialiased" suppressHydrationWarning>
+      <body className={`${ptSans.className} antialiased`} suppressHydrationWarning>
         <FirebaseClientProvider>
           <ThemeProvider initialTheme={theme}>
             <div className="flex flex-col min-h-screen">
