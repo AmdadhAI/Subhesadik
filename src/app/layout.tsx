@@ -25,6 +25,15 @@ export default async function RootLayout({
   const content = await getContent();
   const theme: ColorTheme = content.colorTheme || 'green-honey';
 
+  // Get first hero image for preloading to improve LCP
+  let heroImageUrl = '';
+  if (content.heroMode === 'carousel' && content.heroCarouselSlides && content.heroCarouselSlides.length > 0) {
+    const firstActiveSlide = content.heroCarouselSlides.find(s => s.isActive);
+    heroImageUrl = firstActiveSlide?.imageUrl || '';
+  } else {
+    heroImageUrl = content.heroImageUrl || '';
+  }
+
   return (
     <html lang="en" className="light" data-theme={theme} suppressHydrationWarning>
       <head>
@@ -32,6 +41,15 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
+        {heroImageUrl && (
+          <link
+            rel="preload"
+            as="image"
+            href={heroImageUrl}
+            // @ts-ignore - fetchpriority is valid but not in types yet
+            fetchpriority="high"
+          />
+        )}
       </head>
       <body className="font-body antialiased" suppressHydrationWarning>
         <FirebaseClientProvider>
