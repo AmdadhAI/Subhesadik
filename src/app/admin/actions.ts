@@ -35,10 +35,15 @@ export async function seedDatabaseAction() {
 
 /**
  * Server action to revalidate the entire app layout after content updates
- * This fixes the theme color caching issue where changes to colorTheme in Firestore
- * were not reflected because the root layout.tsx uses getContent() which is cached
+ * This fixes caching issues where changes to content (theme, hero images, etc)
+ * weren't reflected because both layout.tsx and page.tsx cache getContent()
  */
 export async function revalidateApp() {
+    // Revalidate layout (for theme changes in header/footer)
     revalidatePath('/', 'layout');
+
+    // Revalidate homepage (for hero image/content changes)
+    revalidatePath('/', 'page');
+
     return { success: true };
 }
