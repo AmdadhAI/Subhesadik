@@ -264,3 +264,114 @@ export const onNewOrder = functions.firestore
 
             return null;
         });
+
+/**
+ * Cloud Function: Process hero images into 3 responsive sizes
+ * Triggered when image uploaded to hero-uploads/ folder  
+ * Generates: 640px (mobile), 1024px (tablet), 1920px (desktop)
+ */
+import sharp from 'sharp';
+import * as path from 'path';
+import * as os from 'os';
+import * as fs from 'fs';
+
+const RESPONSIVE_SIZES = {
+    sm: 640,   // Mobile
+    md: 1024,  // Tablet
+    lg: 1920   // Desktop
+};
+
+export const processHeroImage = functions
+    .runWith({ memory: '1GB', timeoutSeconds: 540 })
+    .storage.object()
+    .onFinalize(async (object) => {
+        const filePath = object.name;
+        
+        // Only process hero uploads
+        if (!filePath || !filePath.startsWith('hero-uploads/')) {
+            return null;
+        }
+
+        const bucket = admin.storage().bucket(object.bucket);
+        const fileName = path.basename(filePath);
+        const imageId = Date.now().toString();
+        
+        // Download original to temp directory
+        const tempFilePath = path.join(os.tmpdir(), fileName);
+        await bucket.file(filePath).download({ destination: tempFilePath });
+
+        try {
+            functions.logger.info(`Processing hero image: ${fileName} into 3 sizes`);
+
+            // Generate 3 responsive sizes
+            const uploadPromises = Object.entries(RESPONSIVE_SIZES).map(async ([sizeName, width]) => {
+                const buffer = await sharp(tempFilePath)
+                    .resize(width, null, {
+                        withoutEnlargement: true,
+                        fit: 'inside'
+                    })
+                    .webp({ quality: 82 })
+                    .toBuffer();
+
+                const destFileName = `hero-${sizeName}.webp`;
+                const destPath = `hero/${imageId}/${destFileName}`;
+                
+                await bucket.file(destPath).save(buffer, {
+                    metadata: {
+                        contentType: 'image/webp',
+                        metadata: {
+                            originalName: fileName,
+                            size: sizeName,
+                            width: width.toString()
+                        }
+                    }
+                });
+
+                // Make file publicly readable
+                await bucket.file(destPath).makePublic();
+
+                // Get public URL
+                const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destPath}`;
+                
+                functions.logger.info(`Generated ${sizeName}: ${publicUrl}`);
+                
+                return { sizeName, url: publicUrl };
+            });
+
+            const results = await Promise.all(uploadPromises);
+
+            // Build URLs object
+            const urls: { [key: string]: string } = {};
+            results.forEach(({ sizeName, url }) => {
+                urls[sizeName] = url;
+            });
+
+            // Update Firestore with responsive URLs
+            await admin.firestore().collection('content').doc('static').update({
+                heroImageUrls: {
+                    sm: urls.sm,
+                    md: urls.md,
+                    lg: urls.lg,
+                    uploadedAt: admin.firestore.FieldValue.serverTimestamp()
+                }
+            });
+
+            functions.logger.info(`Successfully processed hero image into 3 sizes: ${imageId}`);
+
+            // Delete original upload file
+            await bucket.file(filePath).delete();
+            
+            // Clean up temp file
+            fs.unlinkSync(tempFilePath);
+
+            return { success: true, imageId, urls };
+
+        } catch (error) {
+            functions.logger.error('Error processing hero image:', error);
+            // Clean up temp file on error
+            if (fs.existsSync(tempFilePath)) {
+                fs.unlinkSync(tempFilePath);
+            }
+            throw error;
+        }
+    });

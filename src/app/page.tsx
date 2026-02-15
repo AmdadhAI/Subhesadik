@@ -46,6 +46,7 @@ export default async function Home() {
   const singleSlide = {
     title: content.heroTitle || 'Welcome to Subhe Sadik',
     subtitle: content.heroSubtitle || 'Discover our collection',
+    imageUrls: content.heroImageUrls,  // New: responsive URLs
     imageUrl:
       content.heroImageUrl ||
       'https://images.unsplash.com/photo-1621856139454-03ff9806204c?q=80&w=1964&auto=format&fit=crop',
@@ -64,7 +65,8 @@ export default async function Home() {
               slide={{
                 title: activeSlides[0].title,
                 subtitle: activeSlides[0].subtitle,
-                imageUrl: activeSlides[0].imageUrl,
+                imageUrls: activeSlides[0].imageUrls,  // Pass responsive URLs
+                imageUrl: activeSlides[0].imageUrl,    // Fallback
                 ctaText: activeSlides[0].ctaText,
                 ctaLink: activeSlides[0].ctaLink,
               }}

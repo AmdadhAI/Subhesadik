@@ -94,20 +94,32 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
             {/* Background Image Carousel - Fixed height container */}
             <div className="absolute inset-0 z-0" ref={emblaRef}>
                 <div className="flex h-full">
-                    {slides.map((slide, index) => (
-                        <div className="relative flex-[0_0_100%] h-full" key={slide.id}>
-                            <Image
-                                src={slide.imageUrl}
-                                alt={slide.title}
-                                fill
-                                priority={index === 0}
-                                loading={index === 0 ? undefined : 'lazy'}
-                                sizes="100vw"
-                                className="object-cover"
-                                quality={85}
-                            />
-                        </div>
-                    ))}
+                    {slides.map((slide, index) => {
+                        const imageSrc = slide.imageUrls?.lg || slide.imageUrl || '';
+                        const hasSrcSet = !!slide.imageUrls;
+
+                        return (
+                            <div className="relative flex-[0_0_100%] h-full" key={slide.id}>
+                                <Image
+                                    src={imageSrc}
+                                    alt={slide.title}
+                                    fill
+                                    priority={index === 0}
+                                    loading={index === 0 ? undefined : 'lazy'}
+                                    sizes="100vw"
+                                    {...(hasSrcSet && {
+                                        srcSet: `
+                                            ${slide.imageUrls!.sm} 640w,
+                                            ${slide.imageUrls!.md} 1024w,
+                                            ${slide.imageUrls!.lg} 1920w
+                                        `
+                                    })}
+                                    className="object-cover"
+                                    quality={85}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 

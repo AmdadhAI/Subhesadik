@@ -10,21 +10,33 @@ interface HeroServerFirstSlideProps {
 /**
  * Server-rendered first hero slide to eliminate LCP issues
  * This component renders immediately in the HTML without JS
+ * Supports responsive images (3 sizes) for optimal loading
  */
 export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
+    // Use responsive URLs if available, otherwise fallback to single URL
+    const imageSrc = slide.imageUrls?.lg || slide.imageUrl || '';
+    const hasSrcSet = !!slide.imageUrls;
+
     return (
         <section
             className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden bg-muted"
             style={{ minHeight: '500px', maxHeight: '900px' }}
         >
-            {/* Priority image - loaded immediately, not lazy */}
+            {/* Priority image - loaded immediately with responsive sizes */}
             <Image
-                src={slide.imageUrl}
+                src={imageSrc}
                 alt={slide.title}
                 fill
                 priority
                 fetchPriority="high"
                 sizes="100vw"
+                {...(hasSrcSet && {
+                    srcSet: `
+                        ${slide.imageUrls!.sm} 640w,
+                        ${slide.imageUrls!.md} 1024w,
+                        ${slide.imageUrls!.lg} 1920w
+                    `
+                })}
                 className="object-cover"
                 quality={85}
             />
