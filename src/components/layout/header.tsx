@@ -13,14 +13,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { HeaderSearch } from '../header-search';
 import { CartIcon } from '../cart-icon';
-import { getContent } from '@/lib/firebase-data';
 import Image from 'next/image';
 
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const firestore = useFirestore();
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -33,46 +31,32 @@ export function Header() {
   }, [firestore]);
 
   const { data: unsortedCategories, isLoading } = useCollection<Category>(categoriesQuery);
-  
-  useEffect(() => {
-    async function fetchLogo() {
-        try {
-            const content = await getContent();
-            if (content.logoUrl) {
-                setLogoUrl(content.logoUrl);
-            }
-        } catch (error) {
-            console.error("Failed to fetch logo:", error);
-        }
-    }
-    fetchLogo();
-  }, []);
 
   const categories = useMemo(() => {
     if (!unsortedCategories) return null;
     return [...unsortedCategories].sort((a, b) => a.order - b.order);
   }, [unsortedCategories]);
-  
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isMobileSearchOpen) {
         setIsMobileSearchOpen(false);
       }
     };
-    
+
     // Removing the 'mousedown' listener for handleClickOutside as it can conflict.
     // Users can close with the 'X' button or Escape key.
     window.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
-        window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isMobileSearchOpen]);
-  
+
   const handleMobileLinkClick = () => {
     setIsMobileMenuOpen(false);
   };
-  
+
   const toggleMobileSearch = () => setIsMobileSearchOpen(prev => !prev);
 
   // This component now accepts an onLinkClick prop to handle closing the mobile menu.
@@ -93,14 +77,14 @@ export function Header() {
       )}
       <Link href="/products" className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>All Products</Link>
       <Link href="/collections" className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>All Categories</Link>
-      <AdminHeaderLink className="whitespace-nowrap" onClick={onLinkClick}/>
+      <AdminHeaderLink className="whitespace-nowrap" onClick={onLinkClick} />
     </>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        
+
         {/* --- LEFT (Hamburger on mobile, Logo on desktop) --- */}
         <div className="flex items-center gap-4 lg:flex-none">
           <div className="lg:hidden">
@@ -120,7 +104,7 @@ export function Header() {
                     Subhe Sadik
                   </Link>
                   <nav className="flex flex-col space-y-2">
-                     <DesktopNavLinks onLinkClick={handleMobileLinkClick} />
+                    <DesktopNavLinks onLinkClick={handleMobileLinkClick} />
                   </nav>
                 </div>
               </SheetContent>
@@ -128,58 +112,50 @@ export function Header() {
           </div>
           <div className="hidden lg:block">
             <Link href="/">
-                {logoUrl ? (
-                <div className="relative" style={{ height: '40px', width: '140px' }}>
-                    <Image src={logoUrl} alt="Subhe Sadik Logo" fill style={{objectFit: 'contain'}} priority sizes="140px" />
-                </div>
-                ) : (
-                <h1 className="font-headline text-2xl font-bold text-primary">Subhe Sadik</h1>
-                )}
+              <div className="relative" style={{ height: '40px', width: '140px' }}>
+                <Image src="/logo.webp" alt="Subhe Sadik Logo" fill style={{ objectFit: 'contain' }} priority sizes="140px" />
+              </div>
             </Link>
           </div>
         </div>
 
         {/* --- CENTER (Logo on Mobile, Search on Desktop) --- */}
         <div className="lg:hidden">
-            <Link href="/">
-                {logoUrl ? (
-                <div className="relative" style={{ height: '40px', width: '140px' }}>
-                    <Image src={logoUrl} alt="Subhe Sadik Logo" fill style={{objectFit: 'contain'}} priority sizes="140px" />
-                </div>
-                ) : (
-                <h1 className="font-headline text-2xl font-bold text-primary">Subhe Sadik</h1>
-                )}
-            </Link>
+          <Link href="/">
+            <div className="relative" style={{ height: '40px', width: '140px' }}>
+              <Image src="/logo.webp" alt="Subhe Sadik Logo" fill style={{ objectFit: 'contain' }} priority sizes="140px" />
+            </div>
+          </Link>
         </div>
         <div className="hidden lg:flex flex-1 justify-center px-8">
-            <div className="w-full max-w-lg">
-                    <HeaderSearch setSearching={() => {}} autoFocus={false} />
-            </div>
+          <div className="w-full max-w-lg">
+            <HeaderSearch setSearching={() => { }} autoFocus={false} />
+          </div>
         </div>
 
         {/* --- RIGHT (Search on Mobile, Cart on Desktop) --- */}
         <div className="flex items-center gap-0.5">
-            <Button onClick={toggleMobileSearch} variant="ghost" size="icon" className="lg:hidden">
-                {isMobileSearchOpen ? <X className="h-7 w-7" /> : <SearchIcon className="h-7 w-7" />}
-                <span className="sr-only">{isMobileSearchOpen ? 'Close search' : 'Open search'}</span>
-            </Button>
-            <div className="hidden lg:flex">
-              <CartIcon />
-            </div>
+          <Button onClick={toggleMobileSearch} variant="ghost" size="icon" className="lg:hidden">
+            {isMobileSearchOpen ? <X className="h-7 w-7" /> : <SearchIcon className="h-7 w-7" />}
+            <span className="sr-only">{isMobileSearchOpen ? 'Close search' : 'Open search'}</span>
+          </Button>
+          <div className="hidden lg:flex">
+            <CartIcon />
+          </div>
         </div>
       </div>
 
       {/* Mobile Search Overlay */}
-       {isMobileSearchOpen && (
+      {isMobileSearchOpen && (
         <div ref={searchContainerRef} className="lg:hidden absolute top-full left-0 w-full bg-card border-b p-4 z-50">
-            <HeaderSearch setSearching={setIsMobileSearchOpen} autoFocus={true} />
+          <HeaderSearch setSearching={setIsMobileSearchOpen} autoFocus={true} />
         </div>
       )}
 
       {/* Bottom Layer: Desktop Navigation */}
-       <nav className="hidden lg:flex container mx-auto h-12 items-center justify-center gap-6 text-sm font-medium border-t">
-          <DesktopNavLinks />
-       </nav>
+      <nav className="hidden lg:flex container mx-auto h-12 items-center justify-center gap-6 text-sm font-medium border-t">
+        <DesktopNavLinks />
+      </nav>
     </header>
   );
 }

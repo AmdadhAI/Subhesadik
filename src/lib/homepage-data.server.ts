@@ -2,20 +2,23 @@ import { unstable_cache } from 'next/cache';
 import { getContent } from './firebase-data';
 import { getCategoriesByIds, getProductsByIds } from './firebase-data';
 import type { SiteContent, Category, Product } from './types';
+import type { SerializedProduct } from '@/types/serialized';
 
 /**
  * Homepage data structure
  * Contains all data needed to render the homepage
+ * Products and categories are pre-serialized (Timestamps converted to strings)
  */
 export interface HomepageData {
     content: SiteContent;
-    topProducts: Product[];
-    featuredCategories: Category[];
+    topProducts: SerializedProduct[];
+    featuredCategories: Omit<Category, 'createdAt'>[];
 }
 
 /**
  * Internal function to fetch all homepage data from Firestore
  * This is wrapped by unstable_cache for on-demand revalidation
+ * Serializes Timestamps here to prevent cache serialization errors
  */
 async function fetchHomepageData(): Promise<HomepageData> {
     // Fetch content first to get configuration
@@ -36,10 +39,18 @@ async function fetchHomepageData(): Promise<HomepageData> {
 
     const [topProducts, featuredCategories] = await Promise.all(fetchPromises);
 
+    // Serialize before caching to prevent Timestamp serialization errors
+    const serializedProducts: SerializedProduct[] = topProducts.map(p => ({
+        ...p,
+        createdAt: p.createdAt.toDate().toISOString()
+    }));
+
+    const serializedCategories = featuredCategories.map(({ createdAt, ...rest }) => rest);
+
     return {
         content,
-        topProducts,
-        featuredCategories,
+        topProducts: serializedProducts,
+        featuredCategories: serializedCategories,
     };
 }
 

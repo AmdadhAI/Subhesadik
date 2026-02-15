@@ -10,17 +10,8 @@ import { FeaturedCategories } from "@/components/featured-categories";
 // Zero Firestore reads after first load
 
 export default async function Home() {
-  // Single cached fetch for ALL homepage data
+  // Single cached fetch for ALL homepage data (already serialized)
   const { content, topProducts, featuredCategories } = await getHomepageData();
-
-  // Serialize products for client components
-  const serializableTopProducts = topProducts.map((product) => ({
-    ...product,
-    createdAt: product.createdAt.toDate().toISOString(),
-  }));
-
-  // Serialize categories (remove Timestamp)
-  const serializableCategories = featuredCategories.map(({ createdAt, ...rest }) => rest);
 
   // Determine hero mode and prepare data
   const isCarouselMode =
@@ -37,9 +28,7 @@ export default async function Home() {
     title: content.heroTitle || 'Welcome to Subhe Sadik',
     subtitle: content.heroSubtitle || 'Discover our collection',
     imageUrls: content.heroImageUrls,  // New: responsive URLs
-    imageUrl:
-      content.heroImageUrl ||
-      'https://images.unsplash.com/photo-1621856139454-03ff9806204c?q=80&w=1964&auto=format&fit=crop',
+    imageUrl: content.heroImageUrl || '/hero/default-1.webp',  // Static fallback
     ctaText: content.heroCtaText || 'Shop Now',
     ctaLink: content.heroCtaLink || '/products',
   };
@@ -74,11 +63,11 @@ export default async function Home() {
       {/* Pass data to components - no internal fetching */}
       <FeaturedCategories
         config={content.featuredCategories}
-        categories={serializableCategories}
+        categories={featuredCategories}
       />
       <TopProducts
         config={content.topProducts}
-        products={serializableTopProducts}
+        products={topProducts}
       />
     </div>
   );
