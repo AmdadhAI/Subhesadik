@@ -33,7 +33,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1">
       <Link href={`/products/${product.slug}`} className="block">
         <CardHeader className="p-0">
-          <div className="relative aspect-[4/5] w-full overflow-hidden">
+          <div className="relative aspect-square w-full overflow-hidden">
             <Image
               src={product.images[0]}
               alt={product.name}
