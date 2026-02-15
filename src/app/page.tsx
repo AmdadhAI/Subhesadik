@@ -5,6 +5,10 @@ import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
 import { TopProducts } from "@/components/top-products";
 import { FeaturedCategories } from "@/components/featured-categories";
 
+// Enable ISR: Revalidate every 60 seconds
+// This prevents Firestore reads on every request and improves LCP
+export const revalidate = 60;
+
 export default async function Home() {
   let featuredProducts: Product[] = [];
   let error: string | null = null;
