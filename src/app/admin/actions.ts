@@ -13,7 +13,7 @@ import { seedDatabase as seedDb } from '@/lib/seed';
 import { getFirestore, writeBatch, doc } from 'firebase/firestore';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { firebaseConfig } from '@/firebase/config';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 // The seed action is a special case. We keep it as a server action for simplicity,
 // but we must grant it temporary broad permissions. This is not ideal for production
