@@ -194,7 +194,6 @@ export default function AdminContentPage() {
         title: 'Content Updated',
         description: 'Site content has been saved successfully.',
       });
-      router.refresh();
     } catch (e: any) {
       toast({
         variant: 'destructive',

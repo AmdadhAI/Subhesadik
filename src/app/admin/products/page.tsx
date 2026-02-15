@@ -46,18 +46,18 @@ export default function AdminProductsPage() {
     setSelectedProduct(product);
     setDeleteDialogOpen(true);
   };
-  
+
   const performDelete = async () => {
-      if (!selectedProduct || !firestore) return;
-      try {
-          await deleteDoc(doc(firestore, 'products', selectedProduct.id));
-          toast({ title: 'Success', description: 'Product deleted.' });
-          router.refresh();
-      } catch (e: any) {
-          toast({ variant: 'destructive', title: 'Error', description: e.message });
-      }
-      setDeleteDialogOpen(false);
-      setSelectedProduct(null);
+    if (!selectedProduct || !firestore) return;
+    try {
+      await deleteDoc(doc(firestore, 'products', selectedProduct.id));
+      toast({ title: 'Success', description: 'Product deleted.' });
+      // No router.refresh() needed - useCollection auto-updates
+    } catch (e: any) {
+      toast({ variant: 'destructive', title: 'Error', description: e.message });
+    }
+    setDeleteDialogOpen(false);
+    setSelectedProduct(null);
   }
 
   const isLoading = categoriesLoading || productsLoading;
@@ -67,20 +67,20 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-3xl font-bold">Products</h1>
         <div className="flex gap-2">
-            <Select onValueChange={setCategoryFilter} value={categoryFilter}>
-                <SelectTrigger className="w-full sm:w-[200px]">
-                    <SelectValue placeholder="Filter by category..." />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories?.map(cat => <SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>)}
-                </SelectContent>
-            </Select>
-            <Button asChild>
-                <Link href="/admin/products/new">
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Product
-                </Link>
-            </Button>
+          <Select onValueChange={setCategoryFilter} value={categoryFilter}>
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Filter by category..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories?.map(cat => <SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Button asChild>
+            <Link href="/admin/products/new">
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Product
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -107,13 +107,13 @@ export default function AdminProductsPage() {
                 {isLoading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
-                        <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-48" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-                        <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-12 w-12 rounded-md" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-48" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
                     </TableRow>
                   ))
                 ) : products && products.length > 0 ? (
@@ -127,17 +127,17 @@ export default function AdminProductsPage() {
                     return (
                       <TableRow key={product.id}>
                         <TableCell>
-                            <div className="relative h-12 w-12 rounded-md overflow-hidden">
-                                <Image src={imageUrl} alt={product.name} fill className="object-cover" />
-                            </div>
+                          <div className="relative h-12 w-12 rounded-md overflow-hidden">
+                            <Image src={imageUrl} alt={product.name} fill className="object-cover" />
+                          </div>
                         </TableCell>
                         <TableCell className="font-medium">{product.name}</TableCell>
                         <TableCell className="text-muted-foreground">{categories?.find(c => c.slug === product.categorySlug)?.name || product.categorySlug}</TableCell>
                         <TableCell>৳{(price ?? 0).toFixed(2)}</TableCell>
                         <TableCell>
-                            <Badge variant={inStock ? 'default' : 'secondary'} className={inStock ? 'bg-green-500' : 'bg-yellow-500'}>
-                                {inStock ? 'In Stock' : 'Out of Stock'}
-                            </Badge>
+                          <Badge variant={inStock ? 'default' : 'secondary'} className={inStock ? 'bg-green-500' : 'bg-yellow-500'}>
+                            {inStock ? 'In Stock' : 'Out of Stock'}
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant={product.isActive ? 'default' : 'secondary'} className={product.isActive ? 'bg-blue-500' : ''}>
@@ -167,68 +167,67 @@ export default function AdminProductsPage() {
               </TableBody>
             </Table>
           </div>
-          
-           <div className="md:hidden space-y-4">
-              {isLoading ? (
-                  Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)
-              ) : products && products.length > 0 ? (
-                  products.map(product => {
-                    const isSimple = !product.hasVariants;
-                    const firstVariant = product.variants?.[0];
-                    const inStock = isSimple ? product.inStock : product.variants?.some(v => v.inStock);
-                    const price = isSimple ? product.price : firstVariant?.price;
-                    const imageUrl = product.images?.[0] || `https://picsum.photos/seed/${product.slug}/100`;
 
-                    return (
-                        <Card key={product.id} className="p-4">
-                            <div className="flex gap-4">
-                                <div className="relative h-20 w-20 rounded-md overflow-hidden shrink-0">
-                                    <Image src={imageUrl} alt={product.name} fill className="object-cover" />
-                                </div>
-                                <div className="flex-grow">
-                                    <p className="font-bold">{product.name}</p>
-                                    <p className="text-sm text-muted-foreground">৳{(price ?? 0).toFixed(2)}</p>
-                                    <div className="flex gap-2 mt-2">
-                                        <Badge variant={inStock ? 'default' : 'secondary'} className={inStock ? 'bg-green-500' : 'bg-yellow-500'}>
-                                            {inStock ? 'In Stock' : 'Out of Stock'}
-                                        </Badge>
-                                        <Badge variant={product.isActive ? 'default' : 'secondary'} className={product.isActive ? 'bg-blue-500' : ''}>
-                                            {product.isActive ? 'Visible' : 'Hidden'}
-                                        </Badge>
-                                    </div>
-                                </div>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon"><MoreHorizontal /></Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent>
-                                    <DropdownMenuItem asChild><Link href={`/products/${product.slug}`} target="_blank"><Eye className="mr-2 h-4 w-4" /> View</Link></DropdownMenuItem>
-                                    <DropdownMenuItem asChild><Link href={`/admin/products/${product.id}/edit`}><Pen className="mr-2 h-4 w-4" /> Edit</Link></DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleDelete(product)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </Card>
-                    )
-                  })
-              ) : (
-                 <p className="py-10 text-center text-muted-foreground">No products found.</p>
-              )}
+          <div className="md:hidden space-y-4">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)
+            ) : products && products.length > 0 ? (
+              products.map(product => {
+                const isSimple = !product.hasVariants;
+                const firstVariant = product.variants?.[0];
+                const inStock = isSimple ? product.inStock : product.variants?.some(v => v.inStock);
+                const price = isSimple ? product.price : firstVariant?.price;
+                const imageUrl = product.images?.[0] || `https://picsum.photos/seed/${product.slug}/100`;
+
+                return (
+                  <Card key={product.id} className="p-4">
+                    <div className="flex gap-4">
+                      <div className="relative h-20 w-20 rounded-md overflow-hidden shrink-0">
+                        <Image src={imageUrl} alt={product.name} fill className="object-cover" />
+                      </div>
+                      <div className="flex-grow">
+                        <p className="font-bold">{product.name}</p>
+                        <p className="text-sm text-muted-foreground">৳{(price ?? 0).toFixed(2)}</p>
+                        <div className="flex gap-2 mt-2">
+                          <Badge variant={inStock ? 'default' : 'secondary'} className={inStock ? 'bg-green-500' : 'bg-yellow-500'}>
+                            {inStock ? 'In Stock' : 'Out of Stock'}
+                          </Badge>
+                          <Badge variant={product.isActive ? 'default' : 'secondary'} className={product.isActive ? 'bg-blue-500' : ''}>
+                            {product.isActive ? 'Visible' : 'Hidden'}
+                          </Badge>
+                        </div>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon"><MoreHorizontal /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem asChild><Link href={`/products/${product.slug}`} target="_blank"><Eye className="mr-2 h-4 w-4" /> View</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link href={`/admin/products/${product.id}/edit`}><Pen className="mr-2 h-4 w-4" /> Edit</Link></DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(product)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </Card>
+                )
+              })
+            ) : (
+              <p className="py-10 text-center text-muted-foreground">No products found.</p>
+            )}
           </div>
         </CardContent>
       </Card>
-      
+
       {selectedProduct && (
         <DeleteDialog
-            isOpen={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
-            onConfirm={performDelete}
-            title="Delete Product"
-            description={`Are you sure you want to delete the product "${selectedProduct.name}"? This action cannot be undone.`}
+          isOpen={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={performDelete}
+          title="Delete Product"
+          description={`Are you sure you want to delete the product "${selectedProduct.name}"? This action cannot be undone.`}
         />
       )}
     </div>
   );
 }
 
-    
