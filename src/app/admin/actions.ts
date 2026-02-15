@@ -36,15 +36,15 @@ export async function seedDatabaseAction() {
 /**
  * Server action to revalidate the entire app layout after content updates
  * Uses on-demand revalidation with cache tags instead of time-based ISR
- * This eliminates wasteful Firestore reads (1,440/day → near 0)
+ * This eliminates ALL Firestore reads for homepage (not just hero content)
  */
 export async function revalidateApp() {
     // Revalidate layout (for theme changes in header/footer)
     revalidatePath('/', 'layout');
 
-    // Revalidate homepage content using cache tag (on-demand)
-    // This invalidates the unstable_cache wrapper around getContent
-    revalidateTag('homepage-content');
+    // Revalidate ALL homepage data (hero, products, categories)
+    // This invalidates the unstable_cache wrapper around getHomepageData
+    revalidateTag('homepage');
 
     return { success: true };
 }

@@ -1,5 +1,4 @@
-import { getProducts } from "@/lib/firebase-data";
-import { getContent } from "@/lib/firebase-data-cached"; // On-demand cache with tags
+import { getHomepageData } from "@/lib/homepage-data.server";
 import type { Product } from "@/lib/types";
 import { HeroServerFirstSlide } from "@/components/hero-server-first-slide";
 import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
@@ -7,30 +6,21 @@ import { TopProducts } from "@/components/top-products";
 import { FeaturedCategories } from "@/components/featured-categories";
 
 // No time-based ISR - using on-demand revalidation via cache tags
-// Cache invalidates only when admin saves content (revalidateTag('homepage-content'))
+// Homepage data cached forever until admin updates (revalidateTag('homepage'))
+// Zero Firestore reads after first load
 
 export default async function Home() {
-  let featuredProducts: Product[] = [];
-  let error: string | null = null;
+  // Single cached fetch for ALL homepage data
+  const { content, topProducts, featuredCategories } = await getHomepageData();
 
-  // Fetch products and content in parallel
-  const [allProducts, content] = await Promise.all([
-    getProducts(),
-    getContent(),
-  ]);
-
-  try {
-    const shuffled = allProducts.sort(() => 0.5 - Math.random());
-    featuredProducts = shuffled.slice(0, 4);
-  } catch (e: any) {
-    console.error("Failed to fetch products:", e);
-    error = "There was an issue loading products. Please try again later.";
-  }
-
-  const serializableProducts = featuredProducts.map((product) => ({
+  // Serialize products for client components
+  const serializableTopProducts = topProducts.map((product) => ({
     ...product,
     createdAt: product.createdAt.toDate().toISOString(),
   }));
+
+  // Serialize categories (remove Timestamp)
+  const serializableCategories = featuredCategories.map(({ createdAt, ...rest }) => rest);
 
   // Determine hero mode and prepare data
   const isCarouselMode =
@@ -81,8 +71,15 @@ export default async function Home() {
         <HeroServerFirstSlide slide={singleSlide} />
       )}
 
-      <FeaturedCategories />
-      <TopProducts />
+      {/* Pass data to components - no internal fetching */}
+      <FeaturedCategories
+        config={content.featuredCategories}
+        categories={serializableCategories}
+      />
+      <TopProducts
+        config={content.topProducts}
+        products={serializableTopProducts}
+      />
     </div>
   );
 }
