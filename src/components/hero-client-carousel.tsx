@@ -88,8 +88,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
 
     return (
         <section
-            className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden bg-muted"
-            style={{ minHeight: '500px', maxHeight: '900px' }}
+            className="relative w-full h-[60svh] md:h-[100svh] overflow-hidden bg-muted"
         >
             {/* Background Image Carousel - Fixed height container */}
             <div className="absolute inset-0 z-0" ref={emblaRef}>
