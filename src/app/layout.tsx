@@ -10,6 +10,7 @@ import { NoticeBanner } from '@/components/layout/notice-banner';
 import { CartDrawer } from '@/components/cart/cart-drawer';
 import { getContent } from '@/lib/firebase-data';
 import type { ColorTheme } from '@/lib/types';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Subhe Sadik eCommerce',
@@ -34,21 +35,22 @@ export default async function RootLayout({
       </head>
       <body className="font-body antialiased" suppressHydrationWarning>
         <FirebaseClientProvider>
-          <div className="flex flex-col min-h-screen">
-            <NoticeBanner />
-            <Header />
-            <main className="flex-grow">
-              <PageTransitionWrapper>{children}</PageTransitionWrapper>
-            </main>
-            <Footer />
-          </div>
-          <BottomNav />
-          <CartDrawer />
-          <Toaster />
+          <ThemeProvider initialTheme={theme}>
+            <div className="flex flex-col min-h-screen">
+              <NoticeBanner />
+              <Header />
+              <main className="flex-grow">
+                <PageTransitionWrapper>{children}</PageTransitionWrapper>
+              </main>
+              <Footer />
+            </div>
+            <BottomNav />
+            <CartDrawer />
+            <Toaster />
+          </ThemeProvider>
         </FirebaseClientProvider>
       </body>
     </html>
   );
 }
 
-    
