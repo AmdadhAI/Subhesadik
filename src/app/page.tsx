@@ -1,13 +1,13 @@
-import { getProducts, getContent } from "@/lib/firebase-data";
+import { getProducts } from "@/lib/firebase-data";
+import { getContent } from "@/lib/firebase-data-cached"; // On-demand cache with tags
 import type { Product } from "@/lib/types";
 import { HeroServerFirstSlide } from "@/components/hero-server-first-slide";
 import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
 import { TopProducts } from "@/components/top-products";
 import { FeaturedCategories } from "@/components/featured-categories";
 
-// Enable ISR: Revalidate every 60 seconds
-// This prevents Firestore reads on every request and improves LCP
-export const revalidate = 60;
+// No time-based ISR - using on-demand revalidation via cache tags
+// Cache invalidates only when admin saves content (revalidateTag('homepage-content'))
 
 export default async function Home() {
   let featuredProducts: Product[] = [];

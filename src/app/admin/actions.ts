@@ -35,15 +35,16 @@ export async function seedDatabaseAction() {
 
 /**
  * Server action to revalidate the entire app layout after content updates
- * This fixes caching issues where changes to content (theme, hero images, etc)
- * weren't reflected because both layout.tsx and page.tsx cache getContent()
+ * Uses on-demand revalidation with cache tags instead of time-based ISR
+ * This eliminates wasteful Firestore reads (1,440/day → near 0)
  */
 export async function revalidateApp() {
     // Revalidate layout (for theme changes in header/footer)
     revalidatePath('/', 'layout');
 
-    // Revalidate homepage (for hero image/content changes)
-    revalidatePath('/', 'page');
+    // Revalidate homepage content using cache tag (on-demand)
+    // This invalidates the unstable_cache wrapper around getContent
+    revalidateTag('homepage-content');
 
     return { success: true };
 }
