@@ -1,4 +1,5 @@
 import { getHomepageData } from "@/lib/homepage-data.server";
+import { getDefaultHeroSlides } from "@/config/default-hero-slides";
 import type { Product } from "@/lib/types";
 import { HeroServerFirstSlide } from "@/components/hero-server-first-slide";
 import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
@@ -14,50 +15,57 @@ export default async function Home() {
   const { content, topProducts, featuredCategories } = await getHomepageData();
 
   // Determine hero mode and prepare data
-  const isCarouselMode =
+  const hasAdminCarouselSlides =
     content.heroMode === 'carousel' &&
     content.heroCarouselSlides &&
     content.heroCarouselSlides.length > 0;
 
-  const activeSlides = isCarouselMode
+  const activeSlides = hasAdminCarouselSlides
     ? content.heroCarouselSlides!.filter((s) => s.isActive)
     : [];
 
-  // Prepare single slide data for fallback
-  const singleSlide = {
-    title: content.heroTitle || 'Welcome to Subhe Sadik',
-    subtitle: content.heroSubtitle || 'Discover our collection',
-    imageUrls: content.heroImageUrls,  // New: responsive URLs
-    imageUrl: content.heroImageUrl || '/hero/default-1.webp',  // Static fallback
-    ctaText: content.heroCtaText || 'Shop Now',
-    ctaLink: content.heroCtaLink || '/products',
-  };
+  // Use default slides if no admin slides exist
+  const useDefaultSlides = !hasAdminCarouselSlides || activeSlides.length === 0;
+  const defaultSlides = useDefaultSlides ? getDefaultHeroSlides() : [];
+
+  // Determine which slides to use
+  const finalSlides = useDefaultSlides ? defaultSlides : activeSlides;
+  const isCarouselMode = finalSlides.length > 1;
 
   return (
     <div className="flex flex-col space-y-12">
       {/* Server-rendered hero - always renders first slide immediately */}
-      {isCarouselMode && activeSlides.length > 0 ? (
+      {isCarouselMode ? (
         <>
           {/* Server-rendered first slide for instant LCP */}
           <div data-hero="server">
             <HeroServerFirstSlide
               slide={{
-                title: activeSlides[0].title,
-                subtitle: activeSlides[0].subtitle,
-                imageUrls: activeSlides[0].imageUrls,  // Pass responsive URLs
-                imageUrl: activeSlides[0].imageUrl,    // Fallback
-                ctaText: activeSlides[0].ctaText,
-                ctaLink: activeSlides[0].ctaLink,
+                title: finalSlides[0].title,
+                subtitle: finalSlides[0].subtitle,
+                imageUrls: finalSlides[0].imageUrls,  // Only exists for admin slides
+                imageUrl: finalSlides[0].imageUrl,
+                ctaText: finalSlides[0].ctaText,
+                ctaLink: finalSlides[0].ctaLink,
               }}
             />
           </div>
           {/* Client carousel (replaces server slide after hydration) */}
           <div data-hero="client" className="hidden">
-            <HeroCarouselWrapper slides={activeSlides} />
+            <HeroCarouselWrapper slides={finalSlides} />
           </div>
         </>
       ) : (
-        <HeroServerFirstSlide slide={singleSlide} />
+        <HeroServerFirstSlide
+          slide={{
+            title: finalSlides[0].title,
+            subtitle: finalSlides[0].subtitle,
+            imageUrls: finalSlides[0].imageUrls,
+            imageUrl: finalSlides[0].imageUrl,
+            ctaText: finalSlides[0].ctaText,
+            ctaLink: finalSlides[0].ctaLink,
+          }}
+        />
       )}
 
       {/* Pass data to components - no internal fetching */}
