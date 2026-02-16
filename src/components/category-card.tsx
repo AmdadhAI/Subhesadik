@@ -24,23 +24,24 @@ export function CategoryCard({ category }: CategoryCardProps) {
     // If the URL is invalid, we'll let Next/Image handle the error downstream, but this prevents a crash.
     console.warn(`Invalid image URL detected for category ${category.name}:`, displayUrl);
   }
-  
+
   return (
     <Link href={`/collections/${category.slug}`} className="block group">
       <Card className="overflow-hidden transition-all duration-250 ease-out group-hover:shadow-xl group-hover:-translate-y-1">
         <div className="relative aspect-square w-full">
-           <Image 
-              src={displayUrl} 
-              alt={category.name} 
-              fill 
-              className="object-cover transition-transform duration-250 ease-out group-hover:scale-105"
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-              data-ai-hint="category image"
-            />
-           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent transition-colors duration-250 group-hover:from-black/60" />
-           <div className="absolute bottom-0 left-0 p-3">
-              <h3 className="text-base font-bold text-white drop-shadow-md line-clamp-2">{category.name}</h3>
-           </div>
+          <Image
+            src={displayUrl}
+            alt={category.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+            className="object-cover transition-transform duration-250 ease-out group-hover:scale-105"
+            data-ai-hint="category image"
+            quality={80}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent transition-colors duration-250 group-hover:from-black/60" />
+          <div className="absolute bottom-0 left-0 p-3">
+            <h3 className="text-base font-bold text-white drop-shadow-md line-clamp-2">{category.name}</h3>
+          </div>
         </div>
       </Card>
     </Link>
