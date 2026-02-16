@@ -1,22 +1,20 @@
 import { ProductForm } from "@/components/admin/product-form";
-import { getCategories, getProduct } from "@/lib/firebase-data";
+import { getProduct } from "@/lib/firebase-data";
+import { STATIC_CATEGORIES } from "@/config/categories";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { notFound } from "next/navigation";
 
 export default async function EditProductPage({ params }: { params: { productId: string } }) {
     const { productId } = params;
-    const [productData, categoriesData] = await Promise.all([
-        getProduct(productId),
-        getCategories()
-    ]);
-    
+    const productData = await getProduct(productId);
+
     if (!productData) {
         notFound();
     }
 
-    // Only pass serializable data to the client component
-    const categories = categoriesData.map(c => ({
+    // Use hardcoded categories (consistent with frontend)
+    const categories = STATIC_CATEGORIES.map(c => ({
         id: c.id,
         name: c.name,
         slug: c.slug
@@ -29,13 +27,13 @@ export default async function EditProductPage({ params }: { params: { productId:
         <div className="space-y-4">
             <Breadcrumb>
                 <BreadcrumbList>
-                <BreadcrumbItem>
-                    <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                    <BreadcrumbPage>Edit: {product.name}</BreadcrumbPage>
-                </BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>Edit: {product.name}</BreadcrumbPage>
+                    </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <Card>

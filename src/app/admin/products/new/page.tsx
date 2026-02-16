@@ -1,12 +1,11 @@
 import { ProductForm } from "@/components/admin/product-form";
-import { getCategories } from "@/lib/firebase-data";
+import { STATIC_CATEGORIES } from "@/config/categories";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 export default async function NewProductPage() {
-    const categoriesData = await getCategories();
-    // Only pass serializable data to the client component
-    const categories = categoriesData.map(c => ({
+    // Use hardcoded categories (consistent with frontend)
+    const categories = STATIC_CATEGORIES.map(c => ({
         id: c.id,
         name: c.name,
         slug: c.slug
@@ -14,15 +13,15 @@ export default async function NewProductPage() {
 
     return (
         <div className="space-y-4">
-             <Breadcrumb>
+            <Breadcrumb>
                 <BreadcrumbList>
-                <BreadcrumbItem>
-                    <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                    <BreadcrumbPage>New Product</BreadcrumbPage>
-                </BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage>New Product</BreadcrumbPage>
+                    </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
             <Card>
