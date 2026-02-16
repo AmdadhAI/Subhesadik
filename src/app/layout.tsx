@@ -34,8 +34,10 @@ export default async function RootLayout({
   const content = await getContent();
   const theme: ColorTheme = content.colorTheme || 'green-honey';
 
-  // Get banner text (server-side, no CLS)
+  // Get banner text and WhatsApp phone number (server-side, no CLS)
   const topBannerText = content.noticeBanner || '';
+  const whatsappPhone = content.whatsappPhone || '+880 1677-019091';
+
 
   // Get first hero image for preloading to improve LCP
   let heroImageUrl = '';
@@ -68,7 +70,7 @@ export default async function RootLayout({
         <FirebaseClientProvider>
           <ThemeProvider initialTheme={theme}>
             <div className="flex flex-col min-h-screen">
-              <TopBanner text={topBannerText} />
+              <TopBanner text={topBannerText} phone={whatsappPhone} />
               <Header />
               <main className="flex-grow">
                 <PageTransitionWrapper>{children}</PageTransitionWrapper>
