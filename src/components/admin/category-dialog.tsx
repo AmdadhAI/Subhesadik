@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import { useFirestore } from '@/firebase';
 import { doc, setDoc, serverTimestamp, runTransaction, getDocs, query, collection, where } from 'firebase/firestore';
 import { ImageUploader } from './image-uploader';
+import { useRouter } from 'next/navigation';
 
 const categoryFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -33,6 +34,7 @@ interface CategoryDialogProps {
 export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProps) {
   const { toast } = useToast();
   const firestore = useFirestore();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof categoryFormSchema>>({
     resolver: zodResolver(categoryFormSchema),
@@ -44,15 +46,15 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
       imageUrl: '',
     },
   });
-  
+
   const watchedName = form.watch('name');
 
   useEffect(() => {
     if (isOpen) {
       if (category) {
         form.reset({
-            ...category,
-            imageUrl: category.imageUrl || ''
+          ...category,
+          imageUrl: category.imageUrl || ''
         });
       } else {
         form.reset({ name: '', slug: '', order: 0, isActive: true, imageUrl: '' });
@@ -62,9 +64,9 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
   }, [isOpen, category, form]);
 
   useEffect(() => {
-      if (watchedName && !form.formState.dirtyFields.slug) {
-        form.setValue('slug', slugify(watchedName), { shouldValidate: true });
-      }
+    if (watchedName && !form.formState.dirtyFields.slug) {
+      form.setValue('slug', slugify(watchedName), { shouldValidate: true });
+    }
   }, [watchedName, form]);
 
   async function isSlugUnique(slug: string, currentId?: string): Promise<boolean> {
@@ -88,8 +90,8 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
     }
 
     const dataToSave = {
-        ...data,
-        imageUrl: data.imageUrl || null
+      ...data,
+      imageUrl: data.imageUrl || null
     };
 
     try {
@@ -108,6 +110,11 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
       }
 
       toast({ title: 'Success', description: `Category ${category ? 'updated' : 'created'}.` });
+
+      // Force router refresh to update the page data
+      router.refresh();
+
+      // Close dialog after refresh
       onClose();
 
     } catch (e: any) {
@@ -155,10 +162,10 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <FormControl>
-                    <ImageUploader 
-                        uploadPath="categories"
-                        onUrlChange={field.onChange}
-                        currentUrl={field.value || ''}
+                    <ImageUploader
+                      uploadPath="categories"
+                      onUrlChange={field.onChange}
+                      currentUrl={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -176,25 +183,25 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
                 </FormItem>
               )}
             />
-             <FormField
-                control={form.control}
-                name="isActive"
-                render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                        <div className="space-y-0.5">
-                            <FormLabel>Active</FormLabel>
-                            <DialogDescription>
-                                If inactive, the category will be hidden from the store.
-                            </DialogDescription>
-                        </div>
-                        <FormControl>
-                            <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            />
-                        </FormControl>
-                    </FormItem>
-                )}
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Active</FormLabel>
+                    <DialogDescription>
+                      If inactive, the category will be hidden from the store.
+                    </DialogDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
             />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>

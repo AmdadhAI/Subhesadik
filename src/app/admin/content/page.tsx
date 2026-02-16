@@ -21,6 +21,7 @@ import {
   AboutContactSection,
   AdvancedSection,
 } from '@/components/admin/content-sections'
+import { BrandStorySection } from '@/components/admin/content-sections/BrandStorySection'
 import { Save, X } from 'lucide-react'
 import { revalidateApp } from '../actions'
 
@@ -45,6 +46,14 @@ const featuredCategoriesSchema = z.object({
   isEnabled: z.boolean(),
   title: z.string().min(1, 'Title is required.'),
   categoryIds: z.array(z.string()).optional(),
+});
+
+const brandStorySchema = z.object({
+  headline: z.string().min(1, 'Headline is required.'),
+  paragraph1: z.string().min(1, 'First paragraph is required.'),
+  paragraph2: z.string().min(1, 'Second paragraph is required.'),
+  ctaText: z.string().min(1, 'Button text is required.'),
+  ctaLink: z.string().min(1, 'Button link is required.'),
 });
 
 const productPageOptionsSchema = z.object({
@@ -74,6 +83,9 @@ const contentSchema = z.object({
   // Featured Categories
   featuredCategories: featuredCategoriesSchema.optional(),
 
+  // Brand Story
+  brandStory: brandStorySchema.optional(),
+
   productPageOptions: productPageOptionsSchema.optional(),
 
   noticeBanner: z.string().optional().or(z.literal('')),
@@ -84,6 +96,7 @@ const contentSchema = z.object({
     phone: z.string().min(1, 'Phone number is required.'),
     messengerUsername: z.string().optional().or(z.literal('')),
     whatsappNumber: z.string().optional().or(z.literal('')),
+    facebookUrl: z.string().url().optional().or(z.literal('')),
     productChatHelperText: z.string().optional().or(z.literal('')),
     whatsappIconUrl: z.string().url().optional().or(z.literal('')),
     messengerIconUrl: z.string().url().optional().or(z.literal('')),
@@ -122,6 +135,13 @@ export default function AdminContentPage() {
         title: 'Featured Categories',
         categoryIds: [],
       },
+      brandStory: {
+        headline: 'Purity in Every Thread & Drop',
+        paragraph1: 'At Subhe Sadik, we believe in the beauty of tradition. From the finest hand-stitched Panjabis to 100% organic Sunnah foods, we bring you quality that nurtures both body and soul.',
+        paragraph2: 'Every product is carefully selected to honor the values of authenticity, purity, and excellence. We don\'t just sell products – we share a lifestyle rooted in faith and wellness.',
+        ctaText: 'Read Our Story',
+        ctaLink: '/about',
+      },
       productPageOptions: {
         showQuickContact: true,
         whatsappInquiryMessage: "Hello, I'm interested in this product: {{productName}} - {{productUrl}}",
@@ -134,6 +154,7 @@ export default function AdminContentPage() {
         phone: '',
         messengerUsername: '',
         whatsappNumber: '',
+        facebookUrl: 'https://www.facebook.com/subhesadik4747',
         productChatHelperText: '',
         whatsappIconUrl: '',
         messengerIconUrl: '',
@@ -185,7 +206,12 @@ export default function AdminContentPage() {
       return;
     }
     try {
-      await setDoc(doc(firestore, 'content', 'static'), values, { merge: true });
+      // Clean up undefined values - Firestore doesn't accept them
+      const cleanValues = JSON.parse(JSON.stringify(values, (key, value) => {
+        return value === undefined ? null : value;
+      }));
+
+      await setDoc(doc(firestore, 'content', 'static'), cleanValues, { merge: true });
 
       // Fix: Clear Next.js cache to ensure theme changes reflect immediately
       await revalidateApp();
@@ -232,6 +258,7 @@ export default function AdminContentPage() {
           >
             <BrandingAppearanceSection form={form} />
             <HomepageContentSection form={form} />
+            <BrandStorySection form={form} />
             <ProductCatalogSection form={form} />
             <CommunicationNoticesSection form={form} />
             <AboutContactSection form={form} />

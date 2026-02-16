@@ -61,8 +61,6 @@ export default async function RootLayout({
             rel="preload"
             as="image"
             href={heroImageUrl}
-            // @ts-ignore - fetchpriority is valid but not in types yet
-            fetchpriority="high"
           />
         )}
       </head>

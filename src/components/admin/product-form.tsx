@@ -211,11 +211,10 @@ export function ProductForm({ categories, product }: ProductFormProps) {
             // Force router refresh to prevent UI freeze
             router.refresh();
 
-            // Use setTimeout to ensure toast is visible before navigation
+            // Use push instead of window.location for smoother navigation
             setTimeout(() => {
-                // Hard navigation to ensure proper state reset
-                window.location.href = '/admin/products';
-            }, 500);
+                router.push('/admin/products');
+            }, 300);
 
         } catch (e: any) {
             toast({ variant: 'destructive', title: 'Error', description: e.message });

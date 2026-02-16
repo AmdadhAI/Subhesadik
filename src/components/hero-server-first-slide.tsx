@@ -19,7 +19,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
 
     return (
         <section
-            className="relative w-full aspect-video md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full aspect-square md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
         >
             {/* Priority image - loaded immediately with responsive sizes */}
             <Image
@@ -50,7 +50,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
                     {/* Fixed height for title to prevent layout shift */}
                     {/* Fixed height for title to prevent layout shift */}
                     <h1
-                        className="font-headline text-2xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
+                        className="font-headline text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
                         style={{ minHeight: '2.5rem' }}
                     >
                         {slide.title}
@@ -64,8 +64,8 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
                         {slide.subtitle}
                     </p>
 
-                    {/* CTA button with fixed dimensions - Hidden on mobile */}
-                    <div className="hidden md:block pt-2">
+                    {/* CTA button with fixed dimensions - Visible on mobile */}
+                    <div className="pt-2">
                         <Button
                             asChild
                             size="lg"

@@ -88,7 +88,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
 
     return (
         <section
-            className="relative w-full aspect-video md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full aspect-square md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
         >
             {/* Background Image Carousel - Fixed height container */}
             <div className="absolute inset-0 z-0" ref={emblaRef}>
@@ -136,7 +136,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                 >
                     <div className="max-w-4xl space-y-4 md:space-y-6">
                         <h1
-                            className="font-headline text-2xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
+                            className="font-headline text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
                         >
                             {displayedSlide.title}
                         </h1>
@@ -145,7 +145,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                             {displayedSlide.subtitle}
                         </p>
 
-                        <div className="hidden md:block pt-2">
+                        <div className="pt-2">
                             <Button
                                 asChild
                                 size="lg"

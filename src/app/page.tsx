@@ -5,6 +5,7 @@ import { HeroServerFirstSlide } from "@/components/hero-server-first-slide";
 import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
 import { TopProducts } from "@/components/top-products";
 import { FeaturedCategories } from "@/components/featured-categories";
+import { BrandStory } from "@/components/brand-story";
 
 // Revalidate every 60 seconds (ISR - Incremental Static Regeneration)
 // New products will appear in Top Products within 1 minute
@@ -18,24 +19,17 @@ export default async function Home() {
   const hasAdminCarouselSlides =
     content.heroMode === 'carousel' &&
     content.heroCarouselSlides &&
-    content.heroCarouselSlides.length > 0;
+    content.heroCarouselSlides.length > 0 &&
+    content.heroCarouselSlides.some(s => s.isActive);
 
-  const activeSlides = hasAdminCarouselSlides
-    ? content.heroCarouselSlides!.filter((s) => s.isActive)
-    : [];
-
-  // Use default slides if no admin slides exist
-  const useDefaultSlides = !hasAdminCarouselSlides || activeSlides.length === 0;
-  const defaultSlides = useDefaultSlides ? getDefaultHeroSlides() : [];
-
-  // Determine which slides to use
-  const finalSlides = useDefaultSlides ? defaultSlides : activeSlides;
-  const isCarouselMode = finalSlides.length > 1;
+  const finalSlides = hasAdminCarouselSlides
+    ? content.heroCarouselSlides!.filter(s => s.isActive)
+    : [getDefaultHeroSlides()[0]]; // Use first default slide as server-rendered fallback
 
   return (
-    <div className="flex flex-col space-y-12">
+    <div className="min-h-screen">
       {/* Server-rendered hero - always renders first slide immediately */}
-      {isCarouselMode ? (
+      {hasAdminCarouselSlides ? (
         <>
           {/* Server-rendered first slide for instant LCP */}
           <div data-hero="server">
@@ -77,6 +71,7 @@ export default async function Home() {
         config={content.topProducts}
         products={topProducts}
       />
+      <BrandStory />
     </div>
   );
 }

@@ -116,6 +116,14 @@ export interface FeaturedCategoriesConfig {
   categoryIds: string[];
 }
 
+export interface BrandStoryConfig {
+  headline: string;
+  paragraph1: string;
+  paragraph2: string;
+  ctaText: string;
+  ctaLink: string;
+}
+
 export type ColorTheme = 'green-honey' | 'indigo-gold' | 'earth-olive' | 'charcoal-green' | 'sun-green';
 
 export interface SiteContent {
@@ -130,6 +138,7 @@ export interface SiteContent {
   heroCarouselSlides?: HeroSlide[];
   topProducts?: TopProductsConfig;
   featuredCategories?: FeaturedCategoriesConfig;
+  brandStory?: BrandStoryConfig;
   noticeBanner?: string;
   aboutUs: string;
   contact: {
@@ -138,6 +147,7 @@ export interface SiteContent {
     phone: string;
     messengerUsername?: string;
     whatsappNumber?: string;
+    facebookUrl?: string;
     productChatHelperText?: string;
     whatsappIconUrl?: string;
     messengerIconUrl?: string;
@@ -149,3 +159,4 @@ export interface SiteContent {
     whatsappInquiryMessage?: string;
   }
 }
+

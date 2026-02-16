@@ -21,10 +21,10 @@ export function FeaturedCategories({ config }: FeaturedCategoriesProps) {
     // Use STATIC_CATEGORIES instead of passed props
     // This bypasses the database fetch latency for images
     return (
-        <div className="w-full">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="w-full pt-6 pb-4 md:pt-8 md:pb-6">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
                 {/* Centered section title with decorative borders */}
-                <div className="flex items-center justify-center gap-4 py-4">
+                <div className="flex items-center justify-center gap-4">
                     <div className="h-px bg-gradient-to-r from-transparent via-primary to-primary flex-1 max-w-32"></div>
                     <h2 className="text-2xl md:text-3xl font-bold font-headline text-center px-4 border-2 border-primary rounded-lg py-2">
                         {config.title}
