@@ -69,7 +69,7 @@ export const STATIC_CATEGORIES: Omit<Category, 'createdAt'>[] = [
         id: 'local',
         name: 'Local',
         slug: 'local',
-        imageUrl: '/categories/local.jpg',
+        imageUrl: '/categories/local.png',
         isActive: true,
         order: 8
     }
