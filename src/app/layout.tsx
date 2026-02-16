@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/footer';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import PageTransitionWrapper from '@/components/page-transition-wrapper';
-import { NoticeBanner } from '@/components/layout/notice-banner';
+import { TopBanner } from '@/components/layout/top-banner';
 import { CartDrawer } from '@/components/cart/cart-drawer';
 import { getContent } from '@/lib/firebase-data';
 import type { ColorTheme } from '@/lib/types';
@@ -33,6 +33,9 @@ export default async function RootLayout({
 }>) {
   const content = await getContent();
   const theme: ColorTheme = content.colorTheme || 'green-honey';
+
+  // Get banner text (server-side, no CLS)
+  const topBannerText = content.noticeBanner || '';
 
   // Get first hero image for preloading to improve LCP
   let heroImageUrl = '';
@@ -65,7 +68,7 @@ export default async function RootLayout({
         <FirebaseClientProvider>
           <ThemeProvider initialTheme={theme}>
             <div className="flex flex-col min-h-screen">
-              <NoticeBanner />
+              <TopBanner text={topBannerText} />
               <Header />
               <main className="flex-grow">
                 <PageTransitionWrapper>{children}</PageTransitionWrapper>
