@@ -6,36 +6,19 @@ import { Button } from '@/components/ui/button';
 import { Menu, Search as SearchIcon, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 import { AdminHeaderLink } from './admin-header-link';
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
-import type { Category } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { STATIC_CATEGORIES } from '@/config/categories';
 import { HeaderSearch } from '../header-search';
 import { CartIcon } from '../cart-icon';
 import Image from 'next/image';
 
-
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const firestore = useFirestore();
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const categoriesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(
-      collection(firestore, 'categories'),
-      where('isActive', '==', true)
-    );
-  }, [firestore]);
-
-  const { data: unsortedCategories, isLoading } = useCollection<Category>(categoriesQuery);
-
-  const categories = useMemo(() => {
-    if (!unsortedCategories) return null;
-    return [...unsortedCategories].sort((a, b) => a.order - b.order);
-  }, [unsortedCategories]);
+  // Use static categories for instant load and performance
+  // No more Firestore fetching here
+  const categories = STATIC_CATEGORIES;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -63,18 +46,11 @@ export function Header() {
   const DesktopNavLinks = ({ onLinkClick }: { onLinkClick?: () => void }) => (
     <>
       <Link href="/" className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>Home</Link>
-      {isLoading ? (
-        <div className="flex items-center gap-6">
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-      ) : (
-        categories?.slice(0, 8).map((category) => ( // Limit to avoid clutter
-          <Link key={category.id} href={`/collections/${category.slug}`} className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>
-            {category.name}
-          </Link>
-        ))
-      )}
+      {categories?.slice(0, 8).map((category) => ( // Limit to avoid clutter
+        <Link key={category.id} href={`/collections/${category.slug}`} className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>
+          {category.name}
+        </Link>
+      ))}
       <Link href="/products" className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>All Products</Link>
       <Link href="/collections" className="text-muted-foreground transition-colors hover:text-primary whitespace-nowrap" onClick={onLinkClick}>All Categories</Link>
       <AdminHeaderLink className="whitespace-nowrap" onClick={onLinkClick} />
