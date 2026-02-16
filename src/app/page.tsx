@@ -16,20 +16,17 @@ export default async function Home() {
   const { content, topProducts, featuredCategories } = await getHomepageData();
 
   // Determine hero mode and prepare data
-  const hasAdminCarouselSlides =
-    content.heroMode !== 'single' &&
-    content.heroCarouselSlides &&
-    content.heroCarouselSlides.length > 0 &&
-    content.heroCarouselSlides.some(s => s.isActive);
+  // Show carousel UNLESS explicitly set to 'single' mode
+  const useCarouselMode = content.heroMode !== 'single';
 
-  const finalSlides = hasAdminCarouselSlides
-    ? content.heroCarouselSlides!.filter(s => s.isActive)
-    : getDefaultHeroSlides(); // Use all default slides as carousel fallback
+  // Get slides from admin or use defaults
+  const adminSlides = content.heroCarouselSlides?.filter(s => s.isActive) || [];
+  const finalSlides = adminSlides.length > 0 ? adminSlides : getDefaultHeroSlides();
 
   return (
     <div className="min-h-screen">
-      {/* Server-rendered hero - always renders first slide immediately */}
-      {hasAdminCarouselSlides ? (
+      {/* Hero Section - Always show carousel unless heroMode is 'single' */}
+      {useCarouselMode ? (
         <>
           {/* Server-rendered first slide for instant LCP */}
           <div data-hero="server">
