@@ -103,7 +103,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                                     src={imageSrc}
                                     alt={slide.title}
                                     fill
-                                    sizes="100vw"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 1024px, 1920px"
                                     {...(hasSrcSet && {
                                         srcSet: `
                                             ${slide.imageUrls!.sm} 640w,
