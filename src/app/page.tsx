@@ -17,14 +17,14 @@ export default async function Home() {
 
   // Determine hero mode and prepare data
   const hasAdminCarouselSlides =
-    content.heroMode === 'carousel' &&
+    content.heroMode !== 'single' &&
     content.heroCarouselSlides &&
     content.heroCarouselSlides.length > 0 &&
     content.heroCarouselSlides.some(s => s.isActive);
 
   const finalSlides = hasAdminCarouselSlides
     ? content.heroCarouselSlides!.filter(s => s.isActive)
-    : [getDefaultHeroSlides()[0]]; // Use first default slide as server-rendered fallback
+    : getDefaultHeroSlides(); // Use all default slides as carousel fallback
 
   return (
     <div className="min-h-screen">
