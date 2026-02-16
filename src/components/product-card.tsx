@@ -39,9 +39,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               alt={product.name}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 50vw, 25vw"
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 20vw, 15vw"
               priority={priority}
               data-ai-hint="product image"
+              quality={75}
             />
             {!inStock && (
               <Badge variant="secondary" className="absolute top-2 left-2">Out of Stock</Badge>
