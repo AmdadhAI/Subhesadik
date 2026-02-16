@@ -88,7 +88,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
 
     return (
         <section
-            className="relative w-full h-[60svh] md:h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full h-[100svh] overflow-hidden bg-muted"
         >
             {/* Background Image Carousel - Fixed height container */}
             <div className="absolute inset-0 z-0" ref={emblaRef}>
