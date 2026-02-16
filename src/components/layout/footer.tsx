@@ -52,7 +52,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
             <h3 className="font-headline font-bold text-lg text-primary">Subhe Sadik</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Minimalist design, maximum satisfaction.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Purity in every thread, Halal in every choice.</p>
 
             {/* Social Media Icons */}
             {hasSocialMedia && (
