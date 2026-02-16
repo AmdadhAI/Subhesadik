@@ -103,7 +103,6 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                                     src={imageSrc}
                                     alt={slide.title}
                                     fill
-                                    loading="lazy"  // All carousel slides lazy load (server handles first)
                                     sizes="100vw"
                                     {...(hasSrcSet && {
                                         srcSet: `

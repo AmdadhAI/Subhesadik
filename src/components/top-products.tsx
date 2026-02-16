@@ -25,7 +25,7 @@ export function TopProducts({ config, products }: TopProductsProps) {
                 <div className="flex overflow-x-auto pb-6 -mb-6 gap-4">
                     {products.map((product, index) => (
                         <div key={product.id} className="w-[45vw] sm:w-64 flex-shrink-0">
-                            <ProductCard product={product} priority={index < 2} />
+                            <ProductCard product={product} priority={index < 4} />
                         </div>
                     ))}
                     {/* Add a spacer to the end */}

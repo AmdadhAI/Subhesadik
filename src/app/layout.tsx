@@ -46,6 +46,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={ptSans.variable} data-theme={theme} suppressHydrationWarning>
       <head>
+        {/* Preconnect to critical origins - saves 300ms each */}
+        <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         {heroImageUrl && (
           <link
             rel="preload"
