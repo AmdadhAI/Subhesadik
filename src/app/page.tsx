@@ -6,9 +6,9 @@ import { HeroCarouselWrapper } from "@/components/hero-carousel-wrapper";
 import { TopProducts } from "@/components/top-products";
 import { FeaturedCategories } from "@/components/featured-categories";
 
-// No time-based ISR - using on-demand revalidation via cache tags
-// Homepage data cached forever until admin updates (revalidateTag('homepage'))
-// Zero Firestore reads after first load
+// Revalidate every 60 seconds (ISR - Incremental Static Regeneration)
+// New products will appear in Top Products within 1 minute
+export const revalidate = 60;
 
 export default async function Home() {
   // Single cached fetch for ALL homepage data (already serialized)

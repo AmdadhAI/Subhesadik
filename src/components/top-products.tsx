@@ -18,18 +18,21 @@ export function TopProducts({ config, products }: TopProductsProps) {
 
     return (
         <div className="w-full">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-3xl font-bold font-headline mb-6">{config.title}</h2>
-            </div>
-            <div className="pl-4 sm:pl-6 lg:pl-8">
-                <div className="flex overflow-x-auto pb-6 -mb-6 gap-4">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+                {/* Centered section title with decorative borders */}
+                <div className="flex items-center justify-center gap-4 py-4">
+                    <div className="h-px bg-gradient-to-r from-transparent via-primary to-primary flex-1 max-w-32"></div>
+                    <h2 className="text-2xl md:text-3xl font-bold font-headline text-center px-4 border-2 border-primary rounded-lg py-2">
+                        {config.title}
+                    </h2>
+                    <div className="h-px bg-gradient-to-l from-transparent via-primary to-primary flex-1 max-w-32"></div>
+                </div>
+
+                {/* Mobile: 2x2 grid, Desktop: 4 columns grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {products.map((product, index) => (
-                        <div key={product.id} className="w-[45vw] sm:w-64 flex-shrink-0">
-                            <ProductCard product={product} priority={index < 4} />
-                        </div>
+                        <ProductCard key={product.id} product={product} priority={index < 4} />
                     ))}
-                    {/* Add a spacer to the end */}
-                    <div className="w-1 h-1 flex-shrink-0" />
                 </div>
             </div>
         </div>

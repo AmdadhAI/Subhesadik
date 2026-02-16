@@ -23,7 +23,14 @@ export function FeaturedCategories({ config }: FeaturedCategoriesProps) {
     return (
         <div className="w-full">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-                <h2 className="text-3xl font-bold font-headline">{config.title}</h2>
+                {/* Centered section title with decorative borders */}
+                <div className="flex items-center justify-center gap-4 py-4">
+                    <div className="h-px bg-gradient-to-r from-transparent via-primary to-primary flex-1 max-w-32"></div>
+                    <h2 className="text-2xl md:text-3xl font-bold font-headline text-center px-4 border-2 border-primary rounded-lg py-2">
+                        {config.title}
+                    </h2>
+                    <div className="h-px bg-gradient-to-l from-transparent via-primary to-primary flex-1 max-w-32"></div>
+                </div>
                 <FeaturedCategoriesCarousel categories={STATIC_CATEGORIES} />
             </div>
         </div>
