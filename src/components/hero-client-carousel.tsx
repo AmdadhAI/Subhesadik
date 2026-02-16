@@ -16,7 +16,7 @@ interface HeroClientCarouselProps {
 const DotButton: React.FC<{ selected: boolean; onClick: () => void }> = ({ selected, onClick }) => (
     <button
         className={cn(
-            "h-12 w-12 flex items-center justify-center transition-all duration-300",
+            "h-6 w-6 flex items-center justify-center transition-all duration-300 p-0", // Reduced click target size, removed padding
             "hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         )}
         type="button"
@@ -25,7 +25,7 @@ const DotButton: React.FC<{ selected: boolean; onClick: () => void }> = ({ selec
     >
         <span
             className={cn(
-                "h-3 w-3 rounded-full transition-colors duration-300",
+                "h-2 w-2 rounded-full transition-colors duration-300", // Smaller dot
                 selected ? 'bg-primary' : 'bg-white/50'
             )}
         />
@@ -88,7 +88,7 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
 
     return (
         <section
-            className="relative w-full h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full aspect-video md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
         >
             {/* Background Image Carousel - Fixed height container */}
             <div className="absolute inset-0 z-0" ref={emblaRef}>
@@ -136,18 +136,16 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                 >
                     <div className="max-w-4xl space-y-4 md:space-y-6">
                         <h1
-                            className="font-headline text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
-                            style={{ minHeight: '2.5rem' }}
+                            className="font-headline text-2xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
                         >
                             {displayedSlide.title}
                         </h1>
-                        <p
-                            className="text-base md:text-xl lg:text-2xl drop-shadow-md max-w-2xl mx-auto"
-                            style={{ minHeight: '1.5rem' }}
-                        >
+
+                        <p className="hidden md:block text-base md:text-xl lg:text-2xl drop-shadow-md max-w-2xl mx-auto">
                             {displayedSlide.subtitle}
                         </p>
-                        <div className="pt-2">
+
+                        <div className="hidden md:block pt-2">
                             <Button
                                 asChild
                                 size="lg"
@@ -160,8 +158,8 @@ export function HeroClientCarousel({ slides }: HeroClientCarouselProps) {
                 </div>
             )}
 
-            {/* Dots Navigation - Fixed height container with 48x48px touch targets */}
-            <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-1" style={{ minHeight: '48px' }}>
+            {/* Navigation Dots - Tightest spacing */}
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 z-20 flex gap-0 pb-0">
                 {scrollSnaps.map((_, index) => (
                     <DotButton key={index} selected={index === selectedIndex} onClick={() => scrollTo(index)} />
                 ))}

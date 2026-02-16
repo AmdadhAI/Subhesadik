@@ -19,7 +19,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
 
     return (
         <section
-            className="relative w-full h-[100svh] overflow-hidden bg-muted"
+            className="relative w-full aspect-video md:aspect-auto md:h-[100svh] overflow-hidden bg-muted"
         >
             {/* Priority image - loaded immediately with responsive sizes */}
             <Image
@@ -48,23 +48,24 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
             <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4 pointer-events-none">
                 <div className="max-w-4xl space-y-4 md:space-y-6">
                     {/* Fixed height for title to prevent layout shift */}
+                    {/* Fixed height for title to prevent layout shift */}
                     <h1
-                        className="font-headline text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
+                        className="font-headline text-2xl md:text-5xl lg:text-6xl font-bold tracking-tight drop-shadow-lg"
                         style={{ minHeight: '2.5rem' }}
                     >
                         {slide.title}
                     </h1>
 
-                    {/* Fixed height for subtitle */}
+                    {/* Fixed height for subtitle - Hidden on mobile */}
                     <p
-                        className="text-base md:text-xl lg:text-2xl drop-shadow-md max-w-2xl mx-auto"
+                        className="hidden md:block text-base md:text-xl lg:text-2xl drop-shadow-md max-w-2xl mx-auto"
                         style={{ minHeight: '1.5rem' }}
                     >
                         {slide.subtitle}
                     </p>
 
-                    {/* CTA button with fixed dimensions */}
-                    <div className="pt-2">
+                    {/* CTA button with fixed dimensions - Hidden on mobile */}
+                    <div className="hidden md:block pt-2">
                         <Button
                             asChild
                             size="lg"
