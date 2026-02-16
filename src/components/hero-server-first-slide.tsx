@@ -26,6 +26,7 @@ export function HeroServerFirstSlide({ slide }: HeroServerFirstSlideProps) {
                 src={imageSrc}
                 alt={slide.title}
                 fill
+                loading="eager"
                 priority
                 fetchPriority="high"
                 sizes="100vw"

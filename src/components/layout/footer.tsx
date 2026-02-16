@@ -20,22 +20,22 @@ const defaultContent: SiteContent = {
 
 
 export function Footer() {
-    const [content, setContent] = useState<SiteContent>(defaultContent);
+  const [content, setContent] = useState<SiteContent>(defaultContent);
 
-    useEffect(() => {
-        async function fetchContent() {
-            try {
-                const fetchedContent = await getContent();
-                setContent(fetchedContent);
-            } catch (error) {
-                console.error("Failed to fetch footer content:", error);
-            }
-        }
-        fetchContent();
-    }, []);
+  useEffect(() => {
+    async function fetchContent() {
+      try {
+        const fetchedContent = await getContent();
+        setContent(fetchedContent);
+      } catch (error) {
+        console.error("Failed to fetch footer content:", error);
+      }
+    }
+    fetchContent();
+  }, []);
 
   return (
-    <footer className="bg-card border-t">
+    <footer className="bg-card border-t min-h-[400px]">
       <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
