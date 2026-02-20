@@ -28,7 +28,7 @@ export default async function EditProductPage({ params }: { params: { productId:
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
+                        <BreadcrumbLink href="/dashboard-ss2017/products">Products</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>

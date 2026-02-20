@@ -29,7 +29,7 @@ export function AdminHeaderLink({ className, onClick }: AdminHeaderLinkProps) {
     }
 
     return (
-        <Link href="/admin" className={cn("text-muted-foreground transition-colors hover:text-primary", className)} onClick={onClick}>
+        <Link href="/dashboard-ss2017" className={cn("text-muted-foreground transition-colors hover:text-primary", className)} onClick={onClick}>
             Admin
         </Link>
     );

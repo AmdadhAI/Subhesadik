@@ -94,7 +94,7 @@ export default function OrderDetailsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Button variant="ghost" onClick={() => router.push('/admin/orders')}>
+        <Button variant="ghost" onClick={() => router.push('/dashboard-ss2017/orders')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Orders
         </Button>

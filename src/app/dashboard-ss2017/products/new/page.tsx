@@ -16,7 +16,7 @@ export default async function NewProductPage() {
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/admin/products">Products</BreadcrumbLink>
+                        <BreadcrumbLink href="/dashboard-ss2017/products">Products</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>

@@ -30,7 +30,7 @@ export function ThemeProvider({ children, initialTheme }: { children: React.Reac
         fetchTheme();
 
         // Poll for theme changes every 5 seconds when on admin pages
-        const isAdminPage = window.location.pathname.startsWith('/admin');
+        const isAdminPage = window.location.pathname.startsWith('/dashboard-ss2017');
         if (isAdminPage) {
             const interval = setInterval(fetchTheme, 5000);
             return () => clearInterval(interval);

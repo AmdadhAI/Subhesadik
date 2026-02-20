@@ -120,7 +120,7 @@ export default function AdminDashboardPage() {
                         <CardDescription>A list of the 5 most recent orders.</CardDescription>
                     </div>
                     <Button asChild variant="outline" size="sm">
-                        <Link href="/admin/orders">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                        <Link href="/dashboard-ss2017/orders">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
                     </Button>
                 </CardHeader>
                 <CardContent>

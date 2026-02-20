@@ -30,7 +30,7 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      router.push('/admin');
+      router.push('/dashboard-ss2017');
     } catch (error: any) {
       console.error("Login failed:", error);
       let description = "An unexpected error occurred. Please try again.";

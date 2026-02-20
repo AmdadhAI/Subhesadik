@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
             </SelectContent>
           </Select>
           <Button asChild>
-            <Link href="/admin/products/new">
+            <Link href="/dashboard-ss2017/products/new">
               <PlusCircle className="mr-2 h-4 w-4" /> Add Product
             </Link>
           </Button>

@@ -213,7 +213,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
 
             // Use push instead of window.location for smoother navigation
             setTimeout(() => {
-                router.push('/admin/products');
+                router.push('/dashboard-ss2017/products');
             }, 300);
 
         } catch (e: any) {

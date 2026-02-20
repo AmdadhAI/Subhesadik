@@ -89,7 +89,7 @@ export function BottomNav() {
     // Don't render on server, and don't render on admin pages.
     const [isClient, setIsClient] = useState(false);
     useEffect(() => setIsClient(true), []);
-    if (!isClient || pathname.startsWith('/admin')) {
+    if (!isClient || pathname.startsWith('/dashboard-ss2017')) {
         return null;
     }
 
