@@ -55,3 +55,4 @@ functions/.env
 .DS_Store
 Thumbs.db
 subhesadik-408f5-firebase-adminsdk-fbsvc-710ec22ec3.json
+functions/.env

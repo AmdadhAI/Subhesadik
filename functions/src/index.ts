@@ -236,7 +236,7 @@ export const onNewOrder = functions.firestore
 
 
             try {
-                const adminEmail = process.env.ADMIN_EMAIL || "try.amdad@gmail.com";
+                const adminEmail = process.env.ADMIN_EMAIL || "subhesadik2017@gmail.com";
                 await transporter.sendMail({
                     from: `"Subhe Sadik" <${gmailEmail}>`,
                     to: adminEmail,
